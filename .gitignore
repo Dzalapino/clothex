@@ -2,6 +2,6 @@
 /.idea
 
 # Python
-/__pycache__/
+**/__pycache__/
 
 # Packages
