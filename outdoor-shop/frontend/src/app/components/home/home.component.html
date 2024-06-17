@@ -1,0 +1,11 @@
+<a routerLink="login">Login</a>
+
+<div style="display: flex; flex-wrap: wrap">
+  @for(item of itemStock; track item) {
+  <app-item-details
+    [itemDef]="getItemDefById(item.id)"
+    [quantity]="item.quantity"
+  >
+  </app-item-details>
+  }
+</div>

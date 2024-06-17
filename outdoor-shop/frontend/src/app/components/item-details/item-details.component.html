@@ -1,0 +1,10 @@
+@if(itemDef) {
+<div>
+  <p>ID: {{ itemDef.id }}</p>
+  <p>Name: {{ itemDef.name }}</p>
+  <p>Color: {{ itemDef.color }}</p>
+  <p>Quantity: {{ quantity }}</p>
+
+  <button mat-raised-button (click)="buyItem()">Buy</button>
+</div>
+}

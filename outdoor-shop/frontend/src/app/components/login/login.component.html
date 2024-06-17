@@ -1,0 +1,23 @@
+<h1>Login to the admin panel!</h1>
+<form [formGroup]="loginForm" (submit)="signIn()">
+  <p>
+    <mat-form-field appearance="fill">
+      <mat-label>Enter login</mat-label>
+      <input formControlName="login" matInput placeholder="Login" />
+      <mat-icon matSuffix>person</mat-icon>
+    </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field appearance="fill">
+      <mat-label>Enter password</mat-label>
+      <input
+        formControlName="password"
+        matInput
+        placeholder="Password"
+        type="password"
+      />
+      <mat-icon matSuffix>password</mat-icon>
+    </mat-form-field>
+  </p>
+  <button mat-flat-button type="submit">Login</button>
+</form>
