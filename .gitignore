@@ -5,4 +5,9 @@
 **/__pycache__
 .pytest_cache
 
+# Svelte
+/node_modules/
+/public/build/
+.DS_Store
+
 # Packages
