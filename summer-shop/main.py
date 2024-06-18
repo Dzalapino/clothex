@@ -4,7 +4,7 @@ from database.db_connection import engine
 from routers.local_products import local_products_router
 from fastapi.middleware.cors import CORSMiddleware
 
-origins = ['http://localhost:4200', 'http://localhost']
+origins = ['http://localhost:5173', 'http://localhost', 'localhost:5000']
 
 SQLModel.metadata.create_all(engine)
 
