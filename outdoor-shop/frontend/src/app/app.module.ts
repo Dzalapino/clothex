@@ -25,9 +25,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemDetailsComponent } from './components/item-details/item-details.component';
+import { MatTableModule } from '@angular/material/table';
+import { QuantityLabelComponent } from './components/quantity-label/quantity-label.component';
 
 @NgModule({
-  declarations: [AppComponent, AdminComponent, HomeComponent, LoginComponent, ItemDetailsComponent],
+  declarations: [
+    AppComponent,
+    AdminComponent,
+    HomeComponent,
+    LoginComponent,
+    ItemDetailsComponent,
+    QuantityLabelComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -38,6 +47,7 @@ import { ItemDetailsComponent } from './components/item-details/item-details.com
     MatButtonModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    MatTableModule,
   ],
   providers: [
     provideClientHydration(),

@@ -3,7 +3,7 @@
 <div style="display: flex; flex-wrap: wrap">
   @for(item of itemStock; track item) {
   <app-item-details
-    [itemDef]="getItemDefById(item.id)"
+    [itemDef]="getItemDefById(item.productId)"
     [quantity]="item.quantity"
   >
   </app-item-details>

@@ -4,8 +4,8 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
 from sqlmodel import SQLModel
-from repository.item_controller import init_item_defs
-from repository.db_connection import engine
+from repository.item_controller import init_item_stocks, item_router, init_item_defs
+from repository.db_connection import delete_db, engine
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -81,8 +81,11 @@ async def read_protected_route(current_user: str = Depends(get_current_user)):
 def read_root():
     return {"Hello": "World"}
 
+app.include_router(item_router)
 
 if __name__ == "__main__":
+    delete_db()
     init_item_defs()
+    init_item_stocks()
     from uvicorn import run
     run(app, host='0.0.0.0', port=8000)

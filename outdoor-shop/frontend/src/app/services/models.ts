@@ -1,10 +1,11 @@
 export interface ItemDefinition {
-  id: string;
+  id: number;
   name: string;
   color: string;
 }
 
 export interface ItemStock {
-  id: string;
+  id: number;
+  productId: number;
   quantity: number;
 }

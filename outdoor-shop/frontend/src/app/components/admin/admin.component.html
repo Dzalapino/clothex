@@ -1,2 +1,38 @@
-<p>admin works!</p>
+<h1>Admin Panel</h1>
 <button mat-raised-button (click)="logout()">Log out</button>
+
+<h2>Actual item stock:</h2>
+<table mat-table [dataSource]="itemStock">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>ID</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="productId">
+    <th mat-header-cell *matHeaderCellDef>Product ID</th>
+    <td mat-cell *matCellDef="let element">{{ element.productId }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="productName">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let element">
+      {{ getItemDefById(element.id)?.name }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="quantity">
+    <th mat-header-cell *matHeaderCellDef>Quantity</th>
+    <td mat-cell *matCellDef="let element">
+      <div style="display: flex; flex-direction: row">
+        {{ element.quantity }}
+        <app-quantity-label
+          style="margin-left: 10px"
+          [quantity]="element.quantity"
+        ></app-quantity-label>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
