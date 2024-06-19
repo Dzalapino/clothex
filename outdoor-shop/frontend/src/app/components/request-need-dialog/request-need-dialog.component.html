@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Request a product</h2>
+<mat-dialog-content>
+  <b>You are requesting: {{ data.name }}</b>
+  <p>
+    <mat-form-field appearance="fill">
+      <mat-label>Enter needed number</mat-label>
+      <input
+        matInput
+        [formControl]="quantity"
+        min="1"
+        type="number"
+        placeholder="1"
+      />
+      <mat-icon matSuffix>number</mat-icon>
+    </mat-form-field>
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false">Cancel</button>
+  <button
+    mat-button
+    cdkFocusInitial
+    [disabled]="!quantity.valid"
+    (click)="makeRequest()"
+  >
+    Make request
+  </button>
+</mat-dialog-actions>

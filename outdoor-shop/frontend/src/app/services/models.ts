@@ -9,3 +9,8 @@ export interface ItemStock {
   productId: number;
   quantity: number;
 }
+
+export interface BasketItem {
+  productId: number;
+  quantity: number;
+}

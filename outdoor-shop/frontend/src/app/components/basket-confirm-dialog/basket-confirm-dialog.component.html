@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Your shopping summary</h2>
+<mat-dialog-content>
+  <b>Your items: </b>
+  @for(item of basketItems; track item) {
+  <p>{{ getItemDefById(item.productId)?.name }}: {{ item.quantity }}</p>
+  }
+  <br />
+  <br />
+  <hr />
+  <br />
+  <br />
+  <p>
+    <mat-form-field appearance="fill">
+      <mat-label>Enter your name</mat-label>
+      <input matInput placeholder="Name" />
+      <mat-icon matSuffix>person</mat-icon>
+    </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field appearance="fill">
+      <mat-label>Enter your address</mat-label>
+      <input matInput placeholder="Address" />
+      <mat-icon matSuffix>home</mat-icon>
+    </mat-form-field>
+  </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false">Cancel</button>
+  <button mat-button cdkFocusInitial (click)="buyItems()">Confirm</button>
+</mat-dialog-actions>

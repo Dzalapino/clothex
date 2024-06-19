@@ -1,0 +1,15 @@
+<h1>Your basket:</h1>
+@for(item of basketItems; track item) {
+<p>
+  {{ getItemDefById(item.productId)?.name }}: {{ item.quantity }}
+  <button (click)="deleteItem(item.productId)">-1</button>
+</p>
+}
+
+<button
+  *ngIf="basketItems.length > 0"
+  mat-raised-button
+  (click)="openConfirmDialog()"
+>
+  Buy
+</button>

@@ -27,6 +27,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemDetailsComponent } from './components/item-details/item-details.component';
 import { MatTableModule } from '@angular/material/table';
 import { QuantityLabelComponent } from './components/quantity-label/quantity-label.component';
+import { BasketComponent } from './components/basket/basket.component';
+import { BasketConfirmDialogComponent } from './components/basket-confirm-dialog/basket-confirm-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { RequestNeedDialogComponent } from './components/request-need-dialog/request-need-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +41,9 @@ import { QuantityLabelComponent } from './components/quantity-label/quantity-lab
     LoginComponent,
     ItemDetailsComponent,
     QuantityLabelComponent,
+    BasketComponent,
+    BasketConfirmDialogComponent,
+    RequestNeedDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +56,8 @@ import { QuantityLabelComponent } from './components/quantity-label/quantity-lab
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     MatTableModule,
+    MatDialogModule,
+    MatDividerModule,
   ],
   providers: [
     provideClientHydration(),

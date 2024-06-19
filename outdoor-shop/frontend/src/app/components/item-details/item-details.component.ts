@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ItemDefinition } from '../../services/models';
+import { BasketService } from '../../services/basket.service';
 
 @Component({
   selector: 'app-item-details',
@@ -11,7 +12,12 @@ export class ItemDetailsComponent {
   @Input() itemDef?: ItemDefinition;
   @Input() quantity?: number;
 
-  buyItem(): void {
-    console.log(this.itemDef?.id);
+  constructor(private basketService: BasketService) {}
+
+  addToBusket(): void {
+    this.basketService.addItemToBasket({
+      productId: this.itemDef!.id,
+      quantity: 1,
+    });
   }
 }

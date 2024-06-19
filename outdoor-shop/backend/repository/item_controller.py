@@ -34,7 +34,7 @@ def init_item_stocks():
     with get_session() as session:
         item_defs = session.exec(select(ItemDef)).all()
         for definition in item_defs:
-            stock_dto = ItemStockDto(productId=definition.id, quantity = 1)
+            stock_dto = ItemStockDto(productId=definition.id, quantity = 10)
             item_mapped = ItemStock.from_orm(stock_dto)
             session.add(item_mapped)
             session.commit()
@@ -55,3 +55,19 @@ def get_item_stock():
     with get_session() as session:
         items = session.exec(select(ItemStock)).all()
         return items
+
+@item_router.post('/buy-items')
+def buyItems(item: ItemStockDto):
+    with get_session() as session:
+        items = session.exec(select(ItemStock)).all()
+        for i in items:
+            if i.productId == item.productId:
+                if i.quantity < item.quantity:
+                    return 'ERR:There are not that much items on the stock'
+                else:
+                    setattr(i, 'quantity', i.quantity - item.quantity)
+                    session.add(i)
+                    session.commit()
+                    session.refresh(i)
+                    return 'success'
+        return 'ERR:No such item'

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ItemService } from '../../services/items.service';
 import { ItemDefinition, ItemStock } from '../../services/models';
+import { MatDialog } from '@angular/material/dialog';
+import { RequestNeedDialogComponent } from '../request-need-dialog/request-need-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -14,7 +16,15 @@ export class AdminComponent implements OnInit {
   itemDefs: ItemDefinition[] = [];
   itemStock: ItemStock[] = [];
 
-  displayedColumns: string[] = ['id', 'productId', 'productName', 'quantity'];
+  displayedColumns: string[] = [
+    'id',
+    'productId',
+    'productName',
+    'quantity',
+    'actions',
+  ];
+
+  private readonly dialog = inject(MatDialog);
 
   constructor(
     private authService: AuthService,
@@ -35,6 +45,12 @@ export class AdminComponent implements OnInit {
 
   getItemDefById(id: number): ItemDefinition | undefined {
     return this.itemDefs.filter((item) => item.id === id).at(0);
+  }
+
+  openDialog(name: string): void {
+    const ref = this.dialog.open(RequestNeedDialogComponent, {
+      data: { name },
+    });
   }
 
   logout(): void {
