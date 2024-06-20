@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel
 from database.db_connection import engine
 from routers.local_products import local_products_router
+from routers.authentication import authentication_router
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = ['http://localhost:5173', 'http://localhost', 'localhost:5000']
@@ -21,6 +22,7 @@ app.add_middleware(
 
 # Include the routers for controllers
 app.include_router(local_products_router, tags=["Local Products"])
+app.include_router(authentication_router, tags=["Authentication"])
 
 
 @app.get("/")
