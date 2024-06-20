@@ -15,7 +15,7 @@ export async function load({ fetch }) {
     }
 
     // Get the first 10 elements
-    const products = data.slice(0, 10);
+    const products = data.slice(0, 9);
 
     return {
         products
