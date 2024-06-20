@@ -2,6 +2,7 @@ export interface ItemDefinition {
   id: number;
   name: string;
   color: string;
+  imgUrl: string;
 }
 
 export interface ItemStock {

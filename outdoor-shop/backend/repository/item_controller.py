@@ -9,16 +9,17 @@ from repository.db_connection import get_session, engine
 class ItemDefDto(BaseModel):
     name: str
     color: str
+    imgUrl: str
 
 class ItemStockDto(BaseModel):
     productId: int
     quantity: int
 
 item_definitions = [
-    ItemDefDto(name='Shoes', color='White'),
-    ItemDefDto(name='Coat', color='Green'),
-    ItemDefDto(name='Hat', color='Black'),
-    ItemDefDto(name='Cooler coat', color='Red'),
+    ItemDefDto(name='Shoes', color='White', imgUrl='buty.jpg'),
+    ItemDefDto(name='Coat', color='Green', imgUrl='kurtka.jpg'),
+    ItemDefDto(name='Hat', color='Black', imgUrl='czapka.jpg'),
+    ItemDefDto(name='Cooler coat', color='Red', imgUrl='kurtka2.jpg'),
 ]
 
 def init_item_defs():

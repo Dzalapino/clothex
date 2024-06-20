@@ -5,13 +5,12 @@ from datetime import datetime, timedelta
 from typing import Optional
 from sqlmodel import SQLModel
 from repository.item_controller import init_item_stocks, item_router, init_item_defs
+# from repository.order_controller import order_router
 from repository.db_connection import delete_db, engine
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 origins = ['http://localhost:4200', 'http://localhost']
-
-# SQLModel.metadata.create_all(engine)
 
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
@@ -77,11 +76,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 async def read_protected_route(current_user: str = Depends(get_current_user)):
     return {"message": f"Hello admin {current_user}"}
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
 
 app.include_router(item_router)
+# app.include_router(order_router)
 
 if __name__ == "__main__":
     delete_db()

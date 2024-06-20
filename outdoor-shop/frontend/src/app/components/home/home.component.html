@@ -1,13 +1,22 @@
-<a routerLink="login">Login</a>
-
-<div style="display: flex; flex-wrap: wrap">
-  @for(item of itemStock; track item) {
-  <app-item-details
-    [itemDef]="getItemDefById(item.productId)"
-    [quantity]="item.quantity"
-  >
-  </app-item-details>
-  }
+<div class="container">
+  <div class="nav">
+    <h1 class="nav-title">Clothex Outdoor</h1>
+    <button mat-raised-button class="nav-login" routerLink="login">
+      Login
+    </button>
+  </div>
+  <div class="main">
+    <div style="display: flex; flex-wrap: wrap">
+      @for(item of itemStock; track item) {
+      <app-item-details
+        [itemDef]="getItemDefById(item.productId)"
+        [quantity]="item.quantity"
+      >
+      </app-item-details>
+      }
+    </div>
+  </div>
+  <div class="basket">
+    <app-basket></app-basket>
+  </div>
 </div>
-
-<app-basket></app-basket>
