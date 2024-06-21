@@ -1,3 +1,6 @@
+"""
+SQLModel models for the database tables
+"""
 from sqlmodel import SQLModel, Field
 
 
@@ -8,7 +11,7 @@ class LocalProduct(SQLModel, table=True, tablename="local_products"):
 
 class User(SQLModel, table=True, tablename="users"):
     id: int = Field(default=None, primary_key=True, nullable=False)
-    username: str = Field(nullable=False, unique=True)
     email: str = Field(nullable=False, unique=True)
     password_hashed: str = Field(nullable=False)
     is_active: bool = Field(default=True, nullable=False)
+    role: str = Field(default="user", nullable=False)

@@ -1,5 +1,6 @@
-# Pydantic schemas for the database models to parse the request body
-
+"""
+Pydantic schemas for the database models to parse the request body
+"""
 from typing import Optional
 from pydantic import BaseModel, Field
 
@@ -10,13 +11,13 @@ class LocalProduct(BaseModel):
 
 
 class UserCreate(BaseModel):
-    username: str = Field(null=False)
     email: str = Field(null=False)
     password: str = Field(null=False)
+    role: str = Field(default="user")
 
 
 class UserLogin(BaseModel):
-    username: str = Field(null=False)
+    email: str = Field(null=False)
     password: str = Field(null=False)
 
 
@@ -26,4 +27,5 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    email: str
+    role: str = "user"

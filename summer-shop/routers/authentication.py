@@ -1,5 +1,9 @@
+"""
+This module contains the authentication endpoints for the FastAPI application
+"""
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 from jose import JWTError, jwt
 from sqlmodel import select
 from passlib.context import CryptContext
@@ -8,10 +12,10 @@ import os
 from typing import Optional
 
 from database.models import User as UserModel
-from database.schemas import UserLogin, UserCreate, Token, TokenData
+from database.schemas import UserCreate, Token, TokenData
 from database.db_connection import get_session
 
-authentication_router = APIRouter()
+authentication_router = APIRouter(prefix="/auth")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
@@ -25,12 +29,6 @@ token_blacklist = set()
 
 
 # Helper functions
-def get_user_by_username(username: str) -> Optional[UserModel]:
-    with get_session() as session:
-        statement = select(UserModel).where(UserModel.username == username)
-        return session.exec(statement).first()
-
-
 def get_user_by_email(email: str) -> Optional[UserModel]:
     with get_session() as session:
         statement = select(UserModel).where(UserModel.email == email)
@@ -41,9 +39,9 @@ def create_user(user: UserCreate) -> UserModel:
     with get_session() as session:
         hashed_password = pwd_context.hash(user.password)  # Hash the plain password
         db_user = UserModel(
-            username=user.username,
             email=user.email,
             password_hashed=hashed_password,
+            role=user.role
         )
         session.add(db_user)
         session.commit()
@@ -74,10 +72,11 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> UserModel:
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        email: str = payload.get("sub")
+        role: str = payload.get("role")
+        if email is None or role is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(email=email, role=role)
     except JWTError:
         raise credentials_exception
 
@@ -89,32 +88,37 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> UserModel:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    user = get_user_by_username(username=token_data.username)
+    user = get_user_by_email(email=token_data.email)
     if user is None:
         raise credentials_exception
     return user
 
 
 # Endpoints
+@authentication_router.get("/me", response_model=TokenData)
+def me(current_user: UserModel = Depends(get_current_user)):
+    return JSONResponse(content={"email": current_user.email, "role": current_user.role})
+
+
 @authentication_router.post("/register", response_model=Token)
 def register(user: UserCreate):
-    if get_user_by_username(user.username) or get_user_by_email(user.email):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username or email already registered")
+    if get_user_by_email(user.email):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
     new_user = create_user(user)
-    access_token = create_access_token(data={"sub": new_user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(data={"sub": new_user.email, "role": new_user.role})
+    return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
 
 
 @authentication_router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    db_user = get_user_by_username(form_data.username)
+    db_user = get_user_by_email(form_data.username)
     if not db_user or not verify_password(form_data.password, db_user.password_hashed):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
-    access_token = create_access_token(data={"sub": db_user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect email or password")
+    access_token = create_access_token(data={"sub": db_user.email, "role": db_user.role})
+    return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
 
 
 @authentication_router.get("/logout")
 def logout(token: str = Depends(oauth2_scheme)):
     token_blacklist.add(token)
-    return {"message": "Logout successful"}
+    return JSONResponse(content={"message": "Logout successful"})
