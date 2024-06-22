@@ -19,6 +19,15 @@ def get_all_hq_products():
         return hq_products
 
 
+@hq_products_router.get('/categories', response_model=List[str])
+def get_all_categories():
+    with get_session() as session:
+        categories = session.exec(
+            select(HQProduct.category).distinct()
+        )
+        return categories
+
+
 @hq_products_router.get('/{hq_product_id}', response_model=HQProduct)
 def get_hq_product(hq_product_id: int):
     with get_session() as session:
