@@ -2,25 +2,30 @@
   import { session } from '$lib/session';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-
-  // Initialize session from localStorage if available
-  let token = localStorage.getItem('token');
-  if (token) {
-    session.set({ user: { email: 'example@example.com' }, token }); // Retrieve the user email appropriately
-  }
+  import { onMount } from 'svelte';
 
   let userSession;
+
+  // Reactive declaration to subscribe to the session store
   session.subscribe(value => {
     userSession = value;
   });
 
   async function logout() {
-    localStorage.removeItem('token');
-    session.set({});
-    await goto('/');
+    if (typeof window !== 'undefined') { // Ensure we're in the browser
+      localStorage.removeItem('token'); // Clear stored token
+      session.set({}); // Clear session
+      await goto('/'); // Redirect to homepage or login page
+    }
   }
-</script>
 
+  // Ensure session is fetched on mount
+  onMount(() => {
+    session.subscribe(value => {
+      console.log("Session updated:", value);
+    });
+  });
+</script>
 
 <div class="navbar">
   <div class="logo">
@@ -34,24 +39,23 @@
     <a href="/shopping">shopping</a>
     <a href="/about">about</a>
     <a href="/contact">contact</a>
-    {#if userSession && userSession.user?.email}
+    {#if userSession?.user?.email}
       <!-- Additional options for admin users -->
-      {#if userSession.user?.role === 'admin'}
+      {#if userSession.user.role === 'admin'}
         <a href="/admin">admin</a>
       {/if}
       <a href="/profile">profile</a>
       <a href="/" on:click|preventDefault={logout}>Logout</a>
     {:else}
-      {#if $page.path !== '/login'}
+      <!-- Show login link only if the current page is not the login page -->
+      {#if $page.url.pathname !== '/login'}
         <a href="/login">Login</a>
       {/if}
     {/if}
   </nav>
 </div>
 
-
 <style>
-  /* Navbar styling remains the same */
   .navbar {
     display: flex;
     justify-content: space-between;

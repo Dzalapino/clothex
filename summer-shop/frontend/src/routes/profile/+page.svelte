@@ -1,75 +1,88 @@
 <script>
-  import { goto } from '$app/navigation';
   import { session } from '$lib/session';
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
 
-  let username = '';
-  let password = '';
+  let user = {}; // Local user state
+  let email = '';
+  let name = '';
   let errorMessage = '';
+  let successMessage = '';
 
-  async function handleLogin() {
+  // Subscribe to session to get the current user info
+  session.subscribe(value => {
+    user = value.user || {};
+    email = user.email || '';
+    name = user.name || '';
+  });
+
+  async function updateProfile() {
+    // Assuming your backend requires authentication token for profile update
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      errorMessage = 'You are not logged in!';
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
-        method: 'POST',
+      const response = await fetch('http://localhost:8000/auth/update', {
+        method: 'PUT',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: new URLSearchParams({
-          username, // Use correct field name
-          password
+        body: JSON.stringify({
+          email,
+          name
         })
       });
 
       if (!response.ok) {
         const data = await response.json();
-        errorMessage = data.detail || 'Failed to login';
+        errorMessage = data.detail || 'Failed to update profile';
         return;
       }
 
       const data = await response.json();
-      session.set({ user: { email: username }, token: data.access_token });
-
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', data.access_token); // Store token in localStorage
-      }
-
-      await goto('/shopping'); // Redirect after login
+      successMessage = 'Profile updated successfully!';
+      session.set({ ...session, user: data.user }); // Update session store
     } catch (error) {
       errorMessage = error.message;
     }
   }
 
-  // Redirect if already logged in
+  // Redirect to login if not authenticated
   onMount(() => {
-    session.subscribe(value => {
-      if (value.user) {
-        goto('/shopping');
-      }
-    });
+    if (!user.email) {
+      goto('/login');
+    }
   });
 </script>
 
-<div class="auth-container">
-  <h1>Login</h1>
-  <form on:submit|preventDefault={handleLogin}>
+<div class="profile-container">
+  <h1>Your Profile</h1>
+  <form on:submit|preventDefault={updateProfile}>
     <div class="form-group">
       <label>Email:</label>
-      <input type="email" bind:value={username} required />
+      <input type="email" bind:value={email} required readonly/>
     </div>
     <div class="form-group">
-      <label>Password:</label>
-      <input type="password" bind:value={password} required />
+      <label>Name:</label>
+      <input type="text" bind:value={name} required />
     </div>
-    <button type="submit">Login</button>
+    <button type="submit">Update Profile</button>
     {#if errorMessage}
       <p class="error">{errorMessage}</p>
     {/if}
+    {#if successMessage}
+      <p class="success">{successMessage}</p>
+    {/if}
   </form>
-  <p class="register-link">Don't have an account? <a href="/register">Register here</a>.</p>
 </div>
 
 <style>
-  .auth-container {
+  .profile-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -131,16 +144,8 @@
     margin-top: 1em;
   }
 
-  .register-link {
-    margin-top: 1.5em;
-  }
-
-  .register-link a {
-    color: #c0392b;
-    text-decoration: none;
-  }
-
-  .register-link a:hover {
-    text-decoration: underline;
+  .success {
+    color: #27ae60;
+    margin-top: 1em;
   }
 </style>
