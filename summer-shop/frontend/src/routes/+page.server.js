@@ -1,6 +1,6 @@
 
 export async function load({ fetch }) {
-    const response = await fetch('http://localhost:8000/local_products');
+    const response = await fetch('http://localhost:8000/products_joined');
     const data = await response.json();
 
     // Check if the data is empty
