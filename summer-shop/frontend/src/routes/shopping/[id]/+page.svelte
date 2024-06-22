@@ -1,98 +1,76 @@
 <script>
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
+    import { get, subscribe } from 'svelte/store';
+    import { session } from '$lib/session';
 
     let product = {};
     let productId;
+    let isAdmin = false;
+    let newStockAmount = 0;
 
+    // Using reactive statement to watch for changes in the $page store
     $: {
-        productId = $page.params.id; // Get the product ID from the URL
+        const pageData = get(page);
+        productId = pageData.params.id;
     }
 
-    // Print the product ID to the console
-    console.log(productId);
+    // Watch session for changes to determine if user is admin
+    $: {
+        subscribe(session, value => {
+            console.log('Session data in component:', value); // Log session data in component
+            isAdmin = value.role === 'admin';
+        });
+    }
 
-    onMount(async () => {
+    // Fetch product data when component mounts
+    onMount(fetchProduct);
+
+    // Function to fetch product data
+    async function fetchProduct() {
+        if (!productId) return;
+
         try {
-            const response = await fetch(`https://api.example.com/products/${productId}`); // Replace with actual API URL
+            console.log(`Fetching product with ID: ${productId}`);
+            const response = await fetch(`http://localhost:9000/products_joined/${productId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch product data');
+            }
             product = await response.json();
+            console.log('Fetched product:', product);
         } catch (error) {
             console.error('Error fetching product data:', error);
         }
-    });
+    }
 
+    // Function to handle adding to cart
     function addToCart() {
-        // Implement add to cart functionality
+        console.log(`Adding product ${product.name} to cart`);
+    }
+
+    // Function to handle adding more stock
+    async function addMoreStock() {
+        if (!newStockAmount || newStockAmount <= 0) return;
+
+        try {
+            const response = await fetch(`http://localhost:9000/products_joined/${productId}/stock`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({amount: newStockAmount}),
+            });
+
+            if (response.ok) {
+                const updatedProduct = await response.json();
+                product = updatedProduct; // Update local product data
+                newStockAmount = 0; // Reset input field
+                console.log('Stock updated successfully:', updatedProduct);
+            } else {
+                console.error('Failed to update stock');
+            }
+        } catch (error) {
+            console.error('Error updating stock:', error);
+        }
     }
 </script>
-
-<div class="product-detail-container">
-    <h1>{product.name}</h1>
-    <div class="product-detail">
-        <img src={product.imageUrl} alt={product.name} class="product-detail-image" />
-        <div class="product-detail-info">
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
-            <p><strong>Price:</strong> {product.price}</p>
-            <button on:click={addToCart}>Add to Cart</button>
-        </div>
-    </div>
-</div>
-
-<style>
-    .product-detail-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 2em;
-        background-color: rgba(243, 180, 180, 0.8);
-        border: 3px solid #c0392b;
-        border-radius: 1em;
-        max-width: 800px;
-        margin: 2em auto;
-    }
-
-    .product-detail {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .product-detail-image {
-        width: 100%;
-        height: auto;
-        max-width: 300px;
-        border-radius: 0.5em;
-        margin-bottom: 1em;
-    }
-
-    .product-detail-info {
-        color: #333;
-        text-align: center;
-    }
-
-    .product-detail-info h2 {
-        font-family: "Caladea", cursive;
-        color: #c0392b;
-        margin-bottom: 0.5em;
-    }
-
-    .product-detail-info p {
-        font-family: Arial, sans-serif;
-        margin-bottom: 0.5em;
-    }
-
-    button {
-        background-color: #c0392b;
-        color: #fff;
-        border: none;
-        padding: 0.5em 1em;
-        border-radius: 0.5em;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-        background-color: #ff6f61;
-    }
-</style>
