@@ -8,7 +8,7 @@
     <p>Enjoy your stay!</p>
     <p>
         And if you seek clothes for hiking or other outdoor adventures, don't forget to check our
-        <a class="outdoor" href="shopping">outdoor</a> page!
+        <a class="outdoor" href="http://localhost:4200/">outdoor</a> page!
     </p>
     <div class="products">
         <h2>Some inspirations for your stylish persona:</h2>
