@@ -6,3 +6,6 @@ pytest
 passlib
 python-jose
 bcrypt
+apscheduler
+httpx
+requests
