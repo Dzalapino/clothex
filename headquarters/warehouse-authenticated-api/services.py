@@ -160,7 +160,7 @@ async def send_email(email):
     await fm.send_message(message)
 
 
-async def get_selected_product_items(
+async def make_item_order(
     selected_product_id: int,
     selected_size_id: int,
     selected_colour_id,

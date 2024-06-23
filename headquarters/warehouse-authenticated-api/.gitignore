@@ -1,0 +1,6 @@
+*.sql
+*.db
+myvenv/
+test.py
+test2.py
+*.env
