@@ -1,9 +1,13 @@
-import products_database as _products_database
+import products_database as _products_database, vendors_database as _vendors_database
 import models as _models
 import os
+import passlib.hash as _hash
 
 def create_products_database():
     return _products_database.Base.metadata.create_all(bind=_products_database.engine)
+
+def create_vendors_database():
+    return _vendors_database.Base.metadata.create_all(bind=_vendors_database.engine)
 
 path = "./products_database.db"
 try:
@@ -13,7 +17,31 @@ except OSError as error:
     print(error)
     print("OLD DB NOT FOUND...")
 
+path = "./vendors_database.db"
+try:
+    os.remove(path)
+    print("NEW DB SET UP")
+except OSError as error:
+    print(error)
+    print("OLD DB NOT FOUND...")
+
 create_products_database()
+
+def insert_vendors():
+    from sqlalchemy import insert
+    session = _vendors_database.SessionLocal()
+    session.execute(
+        insert(_models.User),
+        [
+            {"shop_name": "Summer LTD", "email": "224407@edu.p.lodz.pl", "phone_number": "1234567", "address": "X Y Z", "hashed_password": '$2b$12$Nac0ocdVdH.3ifiWshhYq.eIDpm/QLin/B6B3VSFhlyTxI05Q9LqC', "grant_license": "S"},
+            {"shop_name": "Outdoor LTD", "email": "230359@edu.p.lodz.pl", "phone_number": "5234567", "address": "Z Y X", "hashed_password": '$2b$12$fI91gNRMr/Xuag3LxOwJH.8honUsQsT65KPyDaLnD7gntuvClJALW', "grant_license": "O"},
+            {"shop_name": "Everything LTD", "email": "253234@edu.p.lodz.pl", "phone_number": "1212121", "address": "Y Z X", "hashed_password": '$2b$12$2V/P0I44jpZWpp6qnBaBaeVku7f0EEr54mLn6Z34cpJfTCREJFpWa', "grant_license": "OS"},
+        ],
+    )
+    session.commit()
+
+create_vendors_database()
+insert_vendors()
 
 def insert_colors():
     from sqlalchemy import insert
