@@ -63,3 +63,20 @@ class ProductsItemsList(_pydantic.RootModel):
     root: List[ProductItem]
     class Config:
         from_attributes = True
+
+class ProductOrder(_pydantic.BaseModel):
+    product_id: int
+    product_name: str
+    product_item_id: int
+    product_code: str
+    #retail_price: float
+    colour_id: int
+    colour_name: str
+    size_option_id: int
+    size_option_name: str
+    variation_id: int
+    quantity_in_stock: int
+    order_quantity: int = 0
+
+    class Config:
+        from_attributes = True

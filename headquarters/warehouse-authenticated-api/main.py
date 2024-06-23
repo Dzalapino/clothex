@@ -55,3 +55,12 @@ async def get_selected_product_items(selected_product_id: int, product_items: _s
     else:
         raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_403_FORBIDDEN,
                             detail="Product item id not found for your license", headers={"WWW-Authenticate": "Bearer"})
+    
+@app.get("/api/order_product_item/{selected_product_id}/{selected_product_variation_id}/{selected_quantity}", response_model=_schemas.ProductOrder)
+async def order_product_item(selected_product_id: int, selected_size_id: int, selected_colour_id: int, selected_quantity: int, 
+                             order: _schemas.ProductOrder = _fastapi.Depends(_services.get_selected_product_items)):
+    if 0 < order.order_quantity <= order.quantity_in_stock:
+        return order
+    else:
+        raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            detail=f"Invalid order size: {order}", headers={"WWW-Authenticate": "Bearer"})
