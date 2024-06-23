@@ -100,7 +100,6 @@ async def get_selected_product_items(
     db: _orm.Session = _fastapi.Depends(get_db),
     token: str = _fastapi.Depends(oauth2schema),
 ):
-    print("AAAAAAAAAJDIIII: ", selected_product_id)
     user_grant_license = get_user_license(db, token)
     with _orm.Session(_products_database.engine) as session:
         products_list = session.query(
@@ -127,3 +126,41 @@ async def get_selected_product_items(
         p_list = [_schemas.ProductItem.from_orm(row) for row in products_list]
         return p_list
 
+async def get_selected_product_items(
+    selected_product_id: int,
+    selected_size_id: int,
+    selected_colour_id,
+    selected_quantity: int,
+    db: _orm.Session = _fastapi.Depends(get_db),
+    token: str = _fastapi.Depends(oauth2schema),
+):
+    user_grant_license = get_user_license(db, token)
+    with _orm.Session(_products_database.engine) as session:
+        item_data = session.query(
+        _models.Product.product_id, _models.Product.product_name,
+        _models.Product_Item.product_item_id, _models.Product_Item.product_code,
+        _models.Colour.colour_id, _models.Colour.colour_name,
+        _models.Size_Option.size_option_id, _models.Size_Option.size_option_name,
+        _models.Product_Variation.variation_id, _models.Product_Variation.quantity_in_stock
+        ).filter(
+            _models.Product.grant_license.like('%'+user_grant_license+'%')
+        ).filter(
+            _models.Product.product_id==selected_product_id
+        ).filter(
+            _models.Colour.colour_id==selected_colour_id
+        ).filter(
+            _models.Size_Option.size_option_id==selected_size_id
+        ).filter(
+            _models.Product_Item.product_id==_models.Product.product_id
+        ).filter(
+            _models.Colour.colour_id==_models.Product_Item.colour_id
+        ).filter(
+            _models.Product_Variation.product_item_id==_models.Product_Item.product_item_id
+        ).filter(
+            _models.Size_Option.size_option_id==_models.Product_Variation.size_option_id
+        ).filter(
+            _models.Product_Category.product_category_id==_models.Product.product_category_id
+        ).all()
+        order = _schemas.ProductOrder.from_orm(item_data[0])
+        order.order_quantity = selected_quantity
+        return order
