@@ -26,7 +26,7 @@
     }
 
     try {
-      const response = await fetch('http://localhost:8000/auth/update', {
+      const response = await fetch('http://localhost:9000/auth/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

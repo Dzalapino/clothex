@@ -44,13 +44,13 @@ mocked_hq_products = [
                        "It may be too hot to handle for some people", "price_pln": 1000.00
     },
     {
-        "id": 9, "category": "socks", "name": "Provoking socks", "image_url": "images/socks.jpg",
-        "description": "Provoking socks that don't soock but that make anckles visible... "
-                       "It may be too hot to handle for some people", "price_pln": 1000.00
+        "id": 9, "category": "t-shirts", "name": "Provoking t-shirt", "image_url": "images/t-shirt.png",
+        "description": "Provoking t-shirt that don't stink but that make elbows visible... "
+                       "It may be too hot to handle for some people", "price_pln": 1111.00
     },
     {
-        "id": 10, "category": "socks", "name": "Provoking socks", "image_url": "images/socks.jpg",
-        "description": "Provoking socks that don't soock but that make anckles visible... "
-                       "It may be too hot to handle for some people", "price_pln": 1000.00
+        "id": 10, "category": "t-shirts", "name": "Provoking t-shirt", "image_url": "images/t-shirt.png",
+        "description": "Provoking t-shirt that don't stink but that make elbows visible... "
+                       "It may be too hot to handle for some people", "price_pln": 1111.00
     }
 ]

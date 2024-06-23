@@ -8,16 +8,17 @@
     <p>Enjoy your stay!</p>
     <p>
         And if you seek clothes for hiking or other outdoor adventures, don't forget to check our
-        <a class="outdoor" href="shopping">outdoor</a> page!
+        <a class="outdoor" href="http://localhost:4200/">outdoor</a> page!
     </p>
     <div class="products">
         <h2>Some inspirations for your stylish persona:</h2>
         <div class="product-grid">
-            {#each data.products as {id, amount_in_stock, name, url}}
-                <a class="product" href={`/product/${id}`} title={`View ${name}`}>
-                    <img src={url} alt={name} class="product-image" />
+            {#each data.products as {id, amount_in_stock, name, image_url, price_pln}}
+                <a class="product" href={`/shopping/${id}`} title={`View ${name}`}>
+                    <img src={image_url} alt={name} class="product-image" />
                     <div class="product-details">
                         <h3>{name}</h3>
+                        <h3>{price_pln} PLN</h3>
                         <p>{amount_in_stock} in stock</p>
                     </div>
                 </a>

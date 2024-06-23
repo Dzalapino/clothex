@@ -1,47 +1,27 @@
 <script>
-  import { onMount } from 'svelte';
-  import { session } from '$lib/session';
-  import { goto } from '$app/navigation';
+  export let data = {categories: [], products: []};
 
-  let products = [];
-  let filteredProducts = [];
   let category = '';
   let minPrice = 0;
   let maxPrice = 0;
 
-  // Subscribe to session to get user information
-  let userSession;
-  session.subscribe(value => userSession = value);
-
-  // Fetch products on component mount
-  onMount(async () => {
-    try {
-      const response = await fetch('https://localhost:8000/local_products'); // Replace with actual API URL
-      products = await response.json();
-      filteredProducts = products; // Initialize filteredProducts
-    } catch (error) {
-      console.error('Error fetching product data:', error);
-    }
-  });
+  let filteredProducts = [];
 
   // Filter products based on the criteria
-  function filterProducts() {
-    filteredProducts = products.filter(product => {
-      return (!category || product.category === category) &&
-             (!minPrice || product.price >= minPrice) &&
-             (!maxPrice || product.price <= maxPrice);
+  const filterProducts = () => {
+    if (!data || !data.products) return [];
+
+    filteredProducts = data.products.filter(product => {
+      return ((product.category === category || category === '') &&
+        (product.price_pln >= minPrice || minPrice === 0 || minPrice === null) &&
+        (product.price_pln <= maxPrice || maxPrice === 0 || maxPrice === null));
     });
+
+    console.log(filteredProducts);
   }
 
-  // Navigate to add product page
-  function addProduct() {
-    goto('/add-product');
-  }
-
-  // Navigate to manage products page
-  function manageProducts() {
-    goto('/manage-products');
-  }
+  // Initialize filteredProducts on mount
+  $: filteredProducts = data.products;
 </script>
 
 <div class="shopping-container">
@@ -52,40 +32,32 @@
       Category:
       <select bind:value={category} on:change={filterProducts}>
         <option value="">All</option>
-        <option value="shirts">Shirts</option>
-        <option value="pants">Pants</option>
-        <option value="accessories">Accessories</option>
-        <!-- Add more categories as needed -->
+        {#each data.categories as category}
+          <option value={category}>{category}</option>
+        {/each}
       </select>
     </label>
 
     <label>
       Min Price:
-      <input type="number" bind:value={minPrice} min="0" on:input={filterProducts} />
+      <input type="number" bind:value={minPrice} min="0" on:input={filterProducts}/>
     </label>
 
     <label>
       Max Price:
-      <input type="number" bind:value={maxPrice} min="0" on:input={filterProducts} />
+      <input type="number" bind:value={maxPrice} min="0" on:input={filterProducts}/>
     </label>
   </div>
 
-  <!-- Admin Controls -->
-  {#if userSession.role === 'admin'}
-    <div class="admin-controls">
-      <button on:click={addProduct}>Add Product</button>
-      <button on:click={manageProducts}>Manage Products</button>
-    </div>
-  {/if}
-
   <div class="product-grid">
     {#if filteredProducts.length > 0}
-      {#each filteredProducts as { id, name, imageUrl, price }}
+      {#each filteredProducts as { id, name, image_url, price_pln, amount_in_stock }}
         <a href={`/shopping/${id}`} class="product-card">
-          <img src={imageUrl} alt={name} class="product-image" />
+          <img src={image_url} alt={name} class="product-image" />
           <div class="product-info">
             <h3>{name}</h3>
-            <p>{price}</p>
+            <h3>{price_pln} PLN</h3>
+            <p>{amount_in_stock} in stock</p>
           </div>
         </a>
       {/each}

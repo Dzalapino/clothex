@@ -1,7 +1,8 @@
 to install dependencies, use the following command in the root directory of the project:
 pip install -r requirements.txt
+
 to run web api, use the following command in the root directory of the project:
-python main.py
+uvicorn main:app --host 127.0.0.1 --port 9000
 
 to install frontend dependencies, use the following command in the frontend directory:
 npm install
