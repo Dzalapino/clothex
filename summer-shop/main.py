@@ -71,7 +71,7 @@ async def fetch_and_save_hq_products():
 def startup_event():  # Schedule the initial sync
     scheduler.add_job(
         fetch_and_save_hq_products,
-        trigger=IntervalTrigger(minutes=30),
+        trigger=IntervalTrigger(minutes=1),
         id="fetch_hq_products",
         replace_existing=True
     )
@@ -95,4 +95,4 @@ if __name__ == "__main__":
 
     # Run the application using uvicorn
     from uvicorn import run
-    run(app, host='0.0.0.0', port=8000)
+    run("main:app", host='127.0.0.1', port=9000)
