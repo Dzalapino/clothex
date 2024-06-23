@@ -36,16 +36,17 @@ export class BasketConfirmDialogComponent implements OnInit {
 
   buyItems(): void {
     for (let item of this.basketItems) {
-      this.itemService.buyItems(item).subscribe((response) => {
-        if (response.startsWith('ERR:')) {
-          this.toastrService.error('Error: ' + response.slice(4));
-        } else {
+      this.itemService.buyItems(item).subscribe(
+        (response) => {
           this.basketService.removeItemFromBasket(
             item.productId,
             item.quantity
           );
+        },
+        (error) => {
+          this.toastrService.error(error.error.detail);
         }
-      });
+      );
     }
     this.dialogRef.close();
   }

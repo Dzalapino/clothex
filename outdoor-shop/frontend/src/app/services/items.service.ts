@@ -32,6 +32,10 @@ export class ItemService {
     });
   }
 
+  getItemById(id: number): Observable<ItemDefinition> {
+    return this.http.get<ItemDefinition>(this.backendUrl + '/item/' + id);
+  }
+
   requestItems(item: BasketItem): Observable<string> {
     return of('success');
   }

@@ -1,6 +1,9 @@
 @if(itemDef) {
 <div>
-  <img src="../../../assets/img/{{ itemDef.imgUrl }}" />
+  <img
+    src="../../../assets/img/{{ itemDef.imgUrl }}"
+    [routerLink]="['/item', itemDef.id]"
+  />
   <p>Name: {{ itemDef.name }}</p>
   <p>Color: {{ itemDef.color }}</p>
 

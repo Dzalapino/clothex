@@ -1,0 +1,21 @@
+<div *ngIf="item; else noItem" class="container">
+  <div class="nav">
+    <h1 class="nav-title">Clothex Outdoor</h1>
+    <button mat-raised-button class="nav-login" routerLink="login">
+      Login
+    </button>
+  </div>
+  <div class="main">
+    <h1>{{ item.name }}</h1>
+    <img src="../../../assets/img/{{ item.imgUrl }}" />
+    <p>Color: {{ item.color }}</p>
+
+    <button mat-raised-button (click)="addToBusket()">Add to basket</button>
+  </div>
+  <div class="basket">
+    <app-basket></app-basket>
+  </div>
+</div>
+<ng-template #noItem>
+  <h1>Item not found. We are sorry</h1>
+</ng-template>
