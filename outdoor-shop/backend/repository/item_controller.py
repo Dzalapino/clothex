@@ -64,11 +64,19 @@ def buyItems(item: ItemStockDto):
         for i in items:
             if i.productId == item.productId:
                 if i.quantity < item.quantity:
-                    return 'ERR:There are not that much items on the stock'
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="There are not that many items")
                 else:
                     setattr(i, 'quantity', i.quantity - item.quantity)
                     session.add(i)
                     session.commit()
                     session.refresh(i)
                     return 'success'
-        return 'ERR:No such item'
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+
+@item_router.get('/item/{id}', response_model=ItemDef) 
+def get_item_by_id(id: int):
+    with get_session() as session:
+        item = session.get(ItemDef, id)
+        if item is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+        return item

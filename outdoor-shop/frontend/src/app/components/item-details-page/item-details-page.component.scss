@@ -1,0 +1,60 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-color: beige;
+  overflow-x: hidden;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 80px;
+  width: 100%;
+  background-color: aqua;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+
+  &-title {
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+
+  &-login {
+    right: 0;
+    margin-right: 30px;
+    margin-left: auto;
+  }
+}
+
+.main {
+  margin-top: 80px;
+  height: 100%;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.basket {
+  position: fixed;
+  top: 150px;
+  right: 50px;
+  padding: 30px;
+  background-color: white;
+}
+
+img {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}

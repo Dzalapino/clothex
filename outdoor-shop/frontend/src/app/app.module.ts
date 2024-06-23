@@ -32,6 +32,7 @@ import { BasketConfirmDialogComponent } from './components/basket-confirm-dialog
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { RequestNeedDialogComponent } from './components/request-need-dialog/request-need-dialog.component';
+import { ItemDetailsPageComponent } from './components/item-details-page/item-details-page.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { RequestNeedDialogComponent } from './components/request-need-dialog/req
     BasketComponent,
     BasketConfirmDialogComponent,
     RequestNeedDialogComponent,
+    ItemDetailsPageComponent,
   ],
   imports: [
     BrowserModule,
