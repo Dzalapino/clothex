@@ -1,6 +1,8 @@
 #fastapi-jwt/services.py
 import fastapi as _fastapi
 import fastapi.security as _security
+import fastapi_mail as _fastapi_mail
+import starlette.responses as _starlette_responses
 import jwt as _jwt #pip install python_jwt https://pypi.org/project/python-jwt/
 import datetime as _dt
 import sqlalchemy.orm as _orm
@@ -16,6 +18,19 @@ config = dotenv_values(".env")
 JWT_SECRET = config['JWT_SECRET']
 ALGORITHM = config['ALGORITHM']
 ACCESS_TOKEN_EXPIRE_MINUTES = int(config['ACCESS_TOKEN_EXPIRE_MINUTES'])
+
+mailing_credentials = dotenv_values("mailing.env")
+mailing_config = _fastapi_mail.ConnectionConfig(
+    MAIL_USERNAME = mailing_credentials['EMAIL'],
+    MAIL_PASSWORD = mailing_credentials['PASS'],
+    MAIL_FROM = mailing_credentials['EMAIL'],
+    MAIL_PORT = int(mailing_credentials['MAIL_PORT']),
+    MAIL_SERVER = mailing_credentials['MAIL_SERVER'],
+    MAIL_STARTTLS = True,
+    MAIL_SSL_TLS = False,
+    USE_CREDENTIALS = True,
+    VALIDATE_CERTS = True
+)
 
 oauth2schema = _security.OAuth2PasswordBearer(tokenUrl="/api/token")
 
@@ -126,6 +141,25 @@ async def get_selected_product_items(
         p_list = [_schemas.ProductItem.from_orm(row) for row in products_list]
         return p_list
 
+
+async def send_email(email):
+    html = f"""
+    <h5>CSITatFTIMS LTD - Headquarter</h5>
+    <br>
+    <p>{email.message}</p>
+    <br>
+    <h6>Best Redards</p>
+    <h6>CSITatFTIMS LTD - Headquarter</h6>
+    """
+    message = _fastapi_mail.MessageSchema(
+    subject=email.subject,
+    recipients=[email.recipent],
+    body=html,
+    subtype=_fastapi_mail.MessageType.html)
+    fm = _fastapi_mail.FastMail(mailing_config)
+    await fm.send_message(message)
+
+
 async def get_selected_product_items(
     selected_product_id: int,
     selected_size_id: int,
@@ -161,6 +195,10 @@ async def get_selected_product_items(
         ).filter(
             _models.Product_Category.product_category_id==_models.Product.product_category_id
         ).all()
-        order = _schemas.ProductOrder.from_orm(item_data[0])
+        try:
+            order = _schemas.ProductOrder.from_orm(item_data[0])
+        except IndexError:
+            raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            detail=f"Order request did not match warehouse state: selected_product_id: {selected_product_id}, selected_size_id: {selected_size_id}, selected_colour_id: {selected_colour_id}, selected_quantity: {selected_quantity}", headers={"X-No-Item": "Product item configuration not found"})
         order.order_quantity = selected_quantity
         return order

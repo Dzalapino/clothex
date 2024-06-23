@@ -3,9 +3,13 @@ It is recommended to set up python virtual environment with following command:
 
 python -m venv myvenv
 
+then activate with:
+
+.\myenv\Scripts\activate
+
 then install required packages with command:
 
-pip install - r requirements.txt
+pip install - r .\requirements.txt
 
 
 OPTIONAL:
@@ -41,3 +45,6 @@ passwords are:
 Summer 
 or 
 Outdoor
+
+
+for mailing you need mailing.env file which cannot be shared here :D

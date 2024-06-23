@@ -54,13 +54,18 @@ async def get_selected_product_items(selected_product_id: int, product_items: _s
         return product_items
     else:
         raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_403_FORBIDDEN,
-                            detail="Product item id not found for your license", headers={"WWW-Authenticate": "Bearer"})
+                            detail="Product item id not found for your license", headers={"X-No-Item": "Product item not found"})
     
 @app.get("/api/order_product_item/{selected_product_id}/{selected_product_variation_id}/{selected_quantity}", response_model=_schemas.ProductOrder)
 async def order_product_item(selected_product_id: int, selected_size_id: int, selected_colour_id: int, selected_quantity: int, 
-                             order: _schemas.ProductOrder = _fastapi.Depends(_services.get_selected_product_items)):
+                             order: _schemas.ProductOrder = _fastapi.Depends(_services.get_selected_product_items), user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
     if 0 < order.order_quantity <= order.quantity_in_stock:
+        subject = "We have received your order"
+        msg = f"We got your order, Wait for confirmation! Here are your order details: {order}"
+        recipent=user.email
+        email = _schemas.EmailContent(recipent=recipent,subject=subject, message=msg)
+        await _services.send_email(email)
         return order
     else:
         raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail=f"Invalid order size: {order}", headers={"WWW-Authenticate": "Bearer"})
+                            detail=f"Order request did not match warehouse state: {order}", headers={"X-No-Item": "Product item configuration not found"})
