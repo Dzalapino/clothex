@@ -80,3 +80,11 @@ class ProductOrder(_pydantic.BaseModel):
 
     class Config:
         from_attributes = True
+
+class EmailSchema(_pydantic.BaseModel):
+    email: List[_pydantic.EmailStr]
+    
+class EmailContent(_pydantic.BaseModel):
+    recipent: str
+    message: str
+    subject: str
