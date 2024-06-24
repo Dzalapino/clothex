@@ -153,7 +153,7 @@ async def createOrder(id: int, variant_id: int, quantity: int):
     print(url)
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers)
+        response = await client.post(url, data={}, headers=headers)
         if response.status_code == 200:
             return response.json()
         else:
@@ -161,6 +161,9 @@ async def createOrder(id: int, variant_id: int, quantity: int):
     
 @item_router.post('/request-items')
 async def makeNeedRequest(dto: ItemStockDto):
+    cache = await use_cache()
+    if cache:
+        raise HTTPException(status_code=500, detail="HQ not available")
     product_id = 1
     for items in item_list:
         for x in items:

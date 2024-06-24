@@ -63,8 +63,10 @@ async def selected_product_items(selected_product_id: int, product_items: _schem
 async def selected_item_images(selected_item_id: int, item_images: _schemas.ProductItemImagesList = _fastapi.Depends(_services.get_item_images)):
     return item_images
 
-@app.post("/api/orders/{selected_product_item_id}/{selected_variant_id}/{selected_quantity}", response_model=_schemas.ProductOrder)
-async def order_product_item(order: _schemas.ProductOrder = _fastapi.Depends(_services.make_item_order), user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
+@app.post("/api/orders/{selected_product_id}/{selected_product_variation_id}/{selected_quantity}", response_model=_schemas.ProductOrder)
+async def order_product_item(
+    selected_product_id: int, selected_product_variation_id:int, selected_quantity:int, 
+    order: _schemas.ProductOrder = _fastapi.Depends(_services.make_item_order), user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
     if 0 < order.order_quantity <= order.quantity_in_stock:
         subject = "We have received your order"
         msg = f"We got your order, Wait for confirmation! Here are your order details: {order}"
