@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { BasketItem, ItemDefinition } from '../../services/models';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { BasketItem, ItemDefinition2 } from '../../services/models';
 import { BasketService } from '../../services/basket.service';
 import { ItemService } from '../../services/items.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -10,32 +10,28 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './basket-confirm-dialog.component.html',
   styleUrl: './basket-confirm-dialog.component.scss',
 })
-export class BasketConfirmDialogComponent implements OnInit {
-  basketItems: BasketItem[] = [];
-  itemDefinitions: ItemDefinition[] = [];
-
+export class BasketConfirmDialogComponent {
   constructor(
     private basketService: BasketService,
     private itemService: ItemService,
     private cdr: ChangeDetectorRef,
     public dialogRef: MatDialogRef<BasketConfirmDialogComponent>,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      itemDefinitions: ItemDefinition2[];
+      basketItems: BasketItem[];
+    }
   ) {}
 
-  ngOnInit(): void {
-    this.basketItems = this.basketService.getBasketItems();
-    this.itemService.getItemDefinitions().subscribe((items) => {
-      this.itemDefinitions = items;
-      this.cdr.detectChanges();
-    });
-  }
-
-  getItemDefById(id: number): ItemDefinition | undefined {
-    return this.itemDefinitions.filter((item) => item.id === id).at(0);
+  getItemDefById(id: number): ItemDefinition2 | undefined {
+    return this.data.itemDefinitions
+      .filter((item) => item.variation_id === id)
+      .at(0);
   }
 
   buyItems(): void {
-    for (let item of this.basketItems) {
+    for (let item of this.data.basketItems) {
       this.itemService.buyItems(item).subscribe(
         (response) => {
           this.basketService.removeItemFromBasket(

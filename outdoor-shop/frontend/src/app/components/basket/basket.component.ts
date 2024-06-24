@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { BasketService } from '../../services/basket.service';
-import { BasketItem, ItemDefinition } from '../../services/models';
+import { BasketItem, ItemDefinition2 } from '../../services/models';
 import { ItemService } from '../../services/items.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BasketConfirmDialogComponent } from '../basket-confirm-dialog/basket-confirm-dialog.component';
@@ -12,7 +12,7 @@ import { BasketConfirmDialogComponent } from '../basket-confirm-dialog/basket-co
 })
 export class BasketComponent implements OnInit {
   basketItems: BasketItem[] = [];
-  itemDefinitions: ItemDefinition[] = [];
+  itemDefinitions: ItemDefinition2[] = [];
 
   private readonly dialog = inject(MatDialog);
 
@@ -24,14 +24,16 @@ export class BasketComponent implements OnInit {
 
   ngOnInit(): void {
     this.basketItems = this.basketService.getBasketItems();
-    this.itemService.getItemDefinitions().subscribe((items) => {
-      this.itemDefinitions = items;
+    this.itemService.getData().subscribe((items) => {
+      this.itemDefinitions = items.flat();
       this.cdr.detectChanges();
     });
   }
 
-  getItemDefById(id: number): ItemDefinition | undefined {
-    return this.itemDefinitions.filter((item) => item.id === id).at(0);
+  getItemDefById(id: number): ItemDefinition2 | undefined {
+    return this.itemDefinitions
+      .filter((item) => item.variation_id === id)
+      .at(0);
   }
 
   deleteItem(id: number): void {
@@ -39,7 +41,12 @@ export class BasketComponent implements OnInit {
   }
 
   openConfirmDialog(): void {
-    const ref = this.dialog.open(BasketConfirmDialogComponent);
+    const ref = this.dialog.open(BasketConfirmDialogComponent, {
+      data: {
+        basketItems: this.basketItems,
+        itemDefinitions: this.itemDefinitions,
+      },
+    });
     ref.afterClosed().subscribe(() => {
       this.basketItems = this.basketService.getBasketItems();
       this.cdr.detectChanges();

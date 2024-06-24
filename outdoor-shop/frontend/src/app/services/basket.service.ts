@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BasketItem } from './models';
 
@@ -6,11 +5,8 @@ import { BasketItem } from './models';
   providedIn: 'root',
 })
 export class BasketService {
-  private backendUrl = 'http://localhost:8001';
   private cacheKey = 'basketItems';
   private _basketItems: BasketItem[] | null = null;
-
-  constructor(private http: HttpClient) {}
 
   getBasketItems(): BasketItem[] {
     if (!this._basketItems) {

@@ -1,13 +1,11 @@
 <h2 mat-dialog-title>Your shopping summary</h2>
 <mat-dialog-content>
   <b>Your items: </b>
-  @for(item of basketItems; track item) {
-  <p>{{ getItemDefById(item.productId)?.name }}: {{ item.quantity }}</p>
+  @for(item of data.basketItems; track item) {
+  <p>{{ getItemDefById(item.productId)?.product_name }}: {{ item.quantity }}</p>
   }
   <br />
-  <br />
   <hr />
-  <br />
   <br />
   <p>
     <mat-form-field appearance="fill">

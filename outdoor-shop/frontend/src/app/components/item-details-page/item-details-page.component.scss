@@ -52,9 +52,34 @@
 }
 
 img {
-  width: 350px;
-  height: 350px;
+  width: 300px;
+  height: 300px;
   object-fit: cover;
   margin-bottom: 15px;
   transition: transform 0.3s ease;
+}
+
+.images-container {
+  display: flex;
+  flex-direction: row;
+  overflow-y: scroll;
+  width: 90%;
+  gap: 48px;
+}
+
+.sizes {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.size-btn {
+  padding: 20px;
+  font-size: 36px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: gray;
 }
