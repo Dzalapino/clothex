@@ -153,7 +153,7 @@ async def createOrder(id: int, variant_id: int, quantity: int):
     print(url)
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers)
+        response = await client.post(url, data={}, headers=headers)
         if response.status_code == 200:
             return response.json()
         else:
