@@ -26,10 +26,10 @@ In order to run this API activate virtual environment with command:
 
 Then run API with:
 
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8001
 
 API will be available under address prompted out in the terminal -> just copy it and paste into 
-browers (by default it is http://127.0.0.1:8000), use <link>/docs to play with manually.
+browers (by specified command it is http://127.0.0.1:8001, but you can change it accoring to your needs), use <link>/docs to play with manually.
 
 
 pssssst....!

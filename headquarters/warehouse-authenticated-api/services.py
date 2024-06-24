@@ -198,8 +198,7 @@ async def register_order(user_id, order):
 
 async def make_item_order(
     selected_product_id: int,
-    selected_size_id: int,
-    selected_colour_id,
+    selected_product_variation_id: int,
     selected_quantity: int,
     db: _orm.Session = _fastapi.Depends(get_db),
     token: str = _fastapi.Depends(oauth2schema),
@@ -215,11 +214,7 @@ async def make_item_order(
         ).filter(
             _models.Product.grant_license.like('%'+user_grant_license+'%')
         ).filter(
-            _models.Product.product_id==selected_product_id
-        ).filter(
-            _models.Colour.colour_id==selected_colour_id
-        ).filter(
-            _models.Size_Option.size_option_id==selected_size_id
+            _models.Product_Variation.variation_id==selected_product_variation_id
         ).filter(
             _models.Product_Item.product_id==_models.Product.product_id
         ).filter(
@@ -235,7 +230,7 @@ async def make_item_order(
             order = _schemas.ProductOrder.from_orm(item_data[0])
         except IndexError:
             raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail=f"Order request did not match warehouse state: selected_product_id: {selected_product_id}, selected_size_id: {selected_size_id}, selected_colour_id: {selected_colour_id}, selected_quantity: {selected_quantity}", headers={"X-No-Item": "Product item configuration not found"})
+                            detail=f"Order request did not match warehouse state: selected_product_id: {selected_product_id}, selected_product_variation_id: {selected_product_variation_id}, selected_quantity: {selected_quantity}", headers={"X-No-Item": "Product item configuration not found"})
         order.order_quantity = selected_quantity
         order.order_tracking_number = int((_datetime.datetime.now()).strftime('%Y%m%d%H%M%S%f')[:-3]) 
         user_id = get_user_id(db, token)
