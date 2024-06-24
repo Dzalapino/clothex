@@ -10,7 +10,7 @@ import sqlalchemy as _sql
 import passlib.hash as _hash
 from dotenv import dotenv_values #pip install https://pypi.org/project/python_dotenv/
 
-from datetime import datetime as _datetime, timedelta as _timedelta
+import datetime as _datetime
 
 import vendors_database as _vendors_database, products_database as _products_database, models as _models, schemas as _schemas
  
@@ -55,6 +55,7 @@ async def create_user(user: _schemas.UserCreate, db: _orm.Session):
 """
 async def authenticate_user(email: str, password: str, db: _orm.Session):
     user = await get_user_by_email(db=db, email=email)
+    print(user)
  
     if not user:
         return False
@@ -63,13 +64,13 @@ async def authenticate_user(email: str, password: str, db: _orm.Session):
     return user
  
  
-async def create_access_token(user: _models.User, expires_delta: _timedelta or None = None):
+async def create_access_token(user: _models.User, expires_delta: _datetime.timedelta or None = None):
     user_obj = _schemas.User.from_orm(user).dict()
 
     if expires_delta:
-        expire = _datetime.utcnow() + expires_delta
+        expire = _datetime.datetime.utcnow() + expires_delta
     else:
-        expire = _datetime.utcnow() + _timedelta(minutes=15)
+        expire = _datetime.datetime.utcnow() + _datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     user_obj.update({"exp": expire})
 
     token = _jwt.encode(user_obj, JWT_SECRET, algorithm=ALGORITHM)
@@ -82,7 +83,7 @@ async def get_current_user(
 ):
     try:
         payload = _jwt.decode(token, JWT_SECRET, algorithms=[ALGORITHM])
-        user = db.query(_models.User).get(payload["id"])
+        user = db.query(_models.User).get(payload["user_id"])
     except:
         raise _fastapi.HTTPException(
             status_code=401, detail="Invalid Email or Password"
@@ -92,12 +93,13 @@ async def get_current_user(
 def get_user_license(db, token):
     try:
         payload = _jwt.decode(token, JWT_SECRET, algorithms=[ALGORITHM])
-        user_grant_license = db.query(_models.User).get(payload["id"]).grant_license
+        user_grant_license = db.query(_models.User).get(payload["user_id"]).grant_license
         return user_grant_license
     except:
         raise _fastapi.HTTPException(
             status_code=401, detail="Invalid credentials or token expired"
         )
+    
 async def get_user_products(
     db: _orm.Session = _fastapi.Depends(get_db),
     token: str = _fastapi.Depends(oauth2schema),
@@ -159,6 +161,40 @@ async def send_email(email):
     fm = _fastapi_mail.FastMail(mailing_config)
     await fm.send_message(message)
 
+def get_user_id(db, token):
+    try:
+        payload = _jwt.decode(token, JWT_SECRET, algorithms=[ALGORITHM])
+        user_id = db.query(_models.User).get(payload["user_id"]).user_id
+        return user_id
+    except:
+        raise _fastapi.HTTPException(
+            status_code=401, detail="Invalid credentials or token expired"
+        )
+
+async def register_order(user_id, order):
+    order_object = _models.Order(
+        order_time = _datetime.datetime.now(),
+        order_confirmed = False,
+        order_send = False,
+        order_tracking_number = order.order_tracking_number,
+
+        user_id = user_id,
+
+        product_id = order.product_id,
+        product_name = order.product_name,
+        product_item_id = order.product_item_id,
+        product_code = order.product_code,
+        colour_id = order.colour_id,
+        colour_name = order.colour_name,
+        size_option_id = order.size_option_id,
+        size_option_name = order.size_option_name,
+        order_quantity = order.order_quantity,
+    )
+
+    with _orm.Session(_vendors_database.engine) as session:
+        session.add(order_object)
+        session.commit()
+        session.refresh(order_object)
 
 async def make_item_order(
     selected_product_id: int,
@@ -201,4 +237,7 @@ async def make_item_order(
             raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
                             detail=f"Order request did not match warehouse state: selected_product_id: {selected_product_id}, selected_size_id: {selected_size_id}, selected_colour_id: {selected_colour_id}, selected_quantity: {selected_quantity}", headers={"X-No-Item": "Product item configuration not found"})
         order.order_quantity = selected_quantity
+        order.order_tracking_number = int((_datetime.datetime.now()).strftime('%Y%m%d%H%M%S%f')[:-3]) 
+        user_id = get_user_id(db, token)
+        await register_order(user_id, order)
         return order

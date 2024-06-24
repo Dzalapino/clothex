@@ -44,11 +44,11 @@ async def get_user(user: _schemas.User = _fastapi.Depends(_services.get_current_
     return user
 
 
-@app.get("/api/myproducts", response_model=_schemas.ProductsList)
+@app.get("/api/products/my", response_model=_schemas.ProductsList)
 async def get_user_products(products: _schemas.ProductsList = _fastapi.Depends(_services.get_user_products)):
     return products
 
-@app.get("/api/selected_product_items/{selected_product_id}", response_model=_schemas.ProductsItemsList)
+@app.get("/api/products/items{selected_product_id}", response_model=_schemas.ProductsItemsList)
 async def get_selected_product_items(selected_product_id: int, product_items: _schemas.ProductsItemsList = _fastapi.Depends(_services.get_selected_product_items)):
     if len(product_items)>1:
         return product_items
@@ -56,7 +56,7 @@ async def get_selected_product_items(selected_product_id: int, product_items: _s
         raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_403_FORBIDDEN,
                             detail="Product item id not found for your license", headers={"X-No-Item": "Product item not found"})
 
-@app.get("/api/order_product_item/{selected_product_id}/{selected_size_id}/{selected_colour_id}", response_model=_schemas.ProductOrder)
+@app.post("/api/products/orders{selected_product_id}/{selected_size_id}/{selected_colour_id}", response_model=_schemas.ProductOrder)
 async def order_product_item(selected_product_id: int, selected_size_id: int, selected_colour_id: int, selected_quantity: int, 
                              order: _schemas.ProductOrder = _fastapi.Depends(_services.make_item_order), user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
     if 0 < order.order_quantity <= order.quantity_in_stock:

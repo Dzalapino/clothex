@@ -1,4 +1,5 @@
 import pydantic as _pydantic
+import datetime as _datetime
  
 from typing import List
 
@@ -15,7 +16,7 @@ class UserCreate(_UserBase):
 """
 
 class User(_UserBase):
-    id: int
+    user_id: int
     shop_name: str
     email: str
     phone_number: str
@@ -31,8 +32,8 @@ class Product(_pydantic.BaseModel):
     product_category_id: int
     brand_id: int
     product_name: str
-    # product category name !
-    # product brand name !
+    # product category name ! todo
+    # product brand name ! todo
     product_description: str
 
     class Config:
@@ -77,6 +78,7 @@ class ProductOrder(_pydantic.BaseModel):
     variation_id: int
     quantity_in_stock: int
     order_quantity: int = 0
+    order_tracking_number: int = 0
 
     class Config:
         from_attributes = True

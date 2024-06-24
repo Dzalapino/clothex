@@ -1,6 +1,7 @@
 import products_database as _products_database, vendors_database as _vendors_database
 import models as _models
 import os
+import datetime as _datetime
 import passlib.hash as _hash
 
 def create_products_database():
@@ -40,8 +41,26 @@ def insert_vendors():
     )
     session.commit()
 
+def insert_orders():
+    from sqlalchemy import insert
+    session = _vendors_database.SessionLocal()
+    session.execute(
+        insert(_models.Order),
+        [
+            {"order_time": _datetime.datetime.now() + _datetime.timedelta(days=-2), "order_confirmed": False, "order_send": False, "order_tracking_number": int((_datetime.datetime.now() + _datetime.timedelta(days=-2)).strftime('%Y%m%d')), "user_id": 1
+            , "product_id": 1, "product_name" : "TS1", "product_item_id" : 1, "product_code" : "TS1_C1", "colour_id" : 1, "colour_name" : "Red", "size_option_id" : 1, "size_option_name" : "M", "order_quantity": 20},
+            {"order_time": _datetime.datetime.now() + _datetime.timedelta(days=-1), "order_confirmed": False, "order_send": False, "order_tracking_number": int((_datetime.datetime.now() + _datetime.timedelta(days=-1)).strftime('%Y%m%d')), "user_id": 1
+            , "product_id": 4, "product_name" : "S1", "product_item_id" : 5, "product_code" : "S1_C1", "colour_id" : 4, "colour_name" : "Another", "size_option_id" : 3, "size_option_name" : "XL", "order_quantity": 50},
+            {"order_time": _datetime.datetime.now() + _datetime.timedelta(days=-0), "order_confirmed": False, "order_send": False, "order_tracking_number": int((_datetime.datetime.now() + _datetime.timedelta(days=-0)).strftime('%Y%m%d')), "user_id": 2
+            , "product_id": 8, "product_name" : "SH2", "product_item_id" : 10, "product_code" : "SH2_C2", "colour_id" : 4, "colour_name" : "Another", "size_option_id" : 8, "size_option_name" : "43", "order_quantity": 30},
+        ],
+    )
+    session.commit()
+
+
 create_vendors_database()
 insert_vendors()
+insert_orders()
 
 def insert_colors():
     from sqlalchemy import insert
