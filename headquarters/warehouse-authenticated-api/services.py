@@ -54,9 +54,7 @@ async def create_user(user: _schemas.UserCreate, db: _orm.Session):
     return user_obj
 """
 async def authenticate_user(email: str, password: str, db: _orm.Session):
-    user = await get_user_by_email(db=db, email=email)
-    print(user)
- 
+    user = await get_user_by_email(db=db, email=email) 
     if not user:
         return False
     if not user.verify_password(password):
@@ -229,6 +227,7 @@ async def make_item_order(
         try:
             order = _schemas.ProductOrder.from_orm(item_data[0])
         except IndexError:
+            print("DUPA")
             raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
                             detail=f"Order request did not match warehouse state: selected_product_id: {selected_product_id}, selected_product_variation_id: {selected_product_variation_id}, selected_quantity: {selected_quantity}", headers={"X-No-Item": "Product item configuration not found"})
         order.order_quantity = selected_quantity
@@ -247,6 +246,7 @@ async def get_brand_details(
     try:
         brand_details = _schemas.BrandDetails.from_orm(brand_details[0])
     except IndexError:
+        print("DUDUDUDUUDUUPPPAPAPPAA")
         raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
                         detail=f"There is no such a brand: selected_brand_id: {selected_brand_id}")
     return brand_details
@@ -259,6 +259,7 @@ async def get_item_images(
     with _orm.Session(_products_database.engine) as session:
         item_images = session.query(tbl).filter(tbl.product_item_id==selected_item_id).all()
     if len(item_images) < 1:
+        print("AAAAADUPPPAPAPPAA")
         raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"There are no images for selected item: selected_item_id: {selected_item_id}")
     images_list = [_schemas.ProductImage.from_orm(row) for row in item_images]
