@@ -14,7 +14,7 @@ from routers.authentication import authentication_router
 from routers.products_joined import products_joined_router
 
 origins = ['http://localhost:5173', 'http://localhost', 'localhost:5000']
-HQ_API_URL = "http://localhost:7000"
+HQ_API_URL = "http://localhost:8000"
 
 SQLModel.metadata.create_all(engine)
 

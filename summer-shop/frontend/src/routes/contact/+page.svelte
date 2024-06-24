@@ -79,48 +79,48 @@
 </style>
 
 <div class="container">
-    <h1>Porozmawiaj z nami na czacie</h1>
+    <h1>Chat with Us</h1>
 
     <p>
-        Nasz Wirtualny Asystent dostępny jest przez całą dobę i zna odpowiedzi na najczęściej zadawane pytania.
+        Our Virtual Assistant is available 24/7 and knows the answers to the most frequently asked questions.
         <br>
-        Możesz także porozmawiać z Konsultantem Biura Obsługi Klienta w godzinach pracy widocznych poniżej.
+        You can also chat with a Customer Service Consultant during the working hours shown below.
     </p>
 
-    <h3>Zadzwoń do nas</h3>
+    <h3>Call Us</h3>
 
-    <p>420 123 123 (połączenie bezpłatne)</p>
+    <p>420 123 123 (toll-free)</p>
 
     <p>
-        Jeżeli chciałbyś uzyskać informację w sprawie Twojego zwrotu, prosimy pamiętać o
-        przygotowaniu numeru zamówienia wraz z numerem przesyłki zwrotnej.
+        If you would like information regarding your return, please remember to
+        have your order number along with the return shipment number ready.
         <br>
-        Nasz magazyn ma zawsze 14 dni na opracowanie zwrotu od momentu wysyłki paczki lub
-        od chwili jej dostarczenia - w przypadku reklamacji.
+        Our warehouse always has 14 days to process the return from the moment of shipment or
+        from the time it is delivered - in the case of complaints.
     </p>
 
     <p>
-        W przypadku kontaktu z Obsługą Klienta Twoje dane osobowe będą przetwarzane zgodnie z
-        naszą Polityką Prywatności.
+        When contacting Customer Service, your personal data will be processed in accordance with
+        our Privacy Policy.
     </p>
 
-    <h3>Godziny pracy</h3>
+    <h3>Working Hours</h3>
 
-    <h4>Kontakt telefoniczny oraz czat:</h4>
-    <p>Poniedziałek - Piątek: 08:00 - 19:00<br>Sobota i Święta: 09:00 - 17:00</p>
-    <h4>Tylko czat:</h4>
-    <p>Niedziela: 09:00 - 17:00</p>
+    <h4>Phone and Chat Contact:</h4>
+    <p>Monday - Friday: 08:00 - 19:00<br>Saturday and Holidays: 09:00 - 17:00</p>
+    <h4>Chat Only:</h4>
+    <p>Sunday: 09:00 - 17:00</p>
 
-    <h4>Uwaga!</h4>
+    <h4>Attention!</h4>
     <p>
-        Zmienione godziny otwarcia w dniach:<br>
-        24.12. - 09:00 - 15:00 (kontakt tylko za pomocą czatu)<br>
-        25.12. - zamknięte<br>
-        31.12. - 09:00 - 15:00 (kontakt tylko za pomocą czatu)<br>
-        01.01. - zamknięte<br>
+        Changed opening hours on the days:<br>
+        24.12. - 09:00 - 15:00 (contact via chat only)<br>
+        25.12. - closed<br>
+        31.12. - 09:00 - 15:00 (contact via chat only)<br>
+        01.01. - closed<br>
     </p>
 
-    <h3>SPOTKAJMY SIĘ W MEDIACH SPOŁECZNOŚCIOWYCH!</h3>
+    <h3>CONNECT WITH US ON SOCIAL MEDIA!</h3>
     <div class="socials">
         <a class="socials-link" href="https://www.youtube.com">
             <img class="socials-img" src="/images/youtube.png" alt="YouTube logo">
