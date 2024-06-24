@@ -65,6 +65,19 @@ class ProductsItemsList(_pydantic.RootModel):
     class Config:
         from_attributes = True
 
+class ProductImage(_pydantic.BaseModel):
+    image_id: int
+    product_item_id: int
+    image_url: str
+
+    class Config:
+        from_attributes = True
+
+class ProductItemImagesList(_pydantic.RootModel):
+    root: List[ProductImage]
+    class Config:
+        from_attributes = True
+
 class ProductOrder(_pydantic.BaseModel):
     product_id: int
     product_name: str
@@ -90,3 +103,11 @@ class EmailContent(_pydantic.BaseModel):
     recipent: str
     message: str
     subject: str
+
+class BrandDetails(_pydantic.BaseModel):
+    brand_id: int
+    brand_name: str
+    brand_description: str
+
+    class Config:
+        from_attributes = True

@@ -241,3 +241,30 @@ async def make_item_order(
         user_id = get_user_id(db, token)
         await register_order(user_id, order)
         return order
+    
+async def get_brand_details(
+    selected_brand_id: int,
+    token: str = _fastapi.Depends(oauth2schema)
+    ):
+    tbl = _models.Brand
+    with _orm.Session(_products_database.engine) as session:
+        brand_details = session.query(tbl).filter(tbl.brand_id==selected_brand_id).all()
+    try:
+        brand_details = _schemas.BrandDetails.from_orm(brand_details[0])
+    except IndexError:
+        raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+                        detail=f"There is no such a brand: selected_brand_id: {selected_brand_id}")
+    return brand_details
+
+async def get_item_images(
+    selected_item_id: int,
+    token: str = _fastapi.Depends(oauth2schema)
+    ):
+    tbl = _models.Product_Image
+    with _orm.Session(_products_database.engine) as session:
+        item_images = session.query(tbl).filter(tbl.product_item_id==selected_item_id).all()
+    if len(item_images) < 1:
+        raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"There are no images for selected item: selected_item_id: {selected_item_id}")
+    images_list = [_schemas.ProductImage.from_orm(row) for row in item_images]
+    return images_list

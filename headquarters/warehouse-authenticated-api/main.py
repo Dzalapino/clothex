@@ -40,23 +40,30 @@ async def generate_token(
     return access_token
 
 @app.get("/api/myprofile", response_model=_schemas.User)
-async def get_user(user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
+async def user(user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
     return user
 
+@app.get("/api/brands/{selected_brand_id}", response_model=_schemas.BrandDetails)
+async def brand_details(brand_details: _schemas.BrandDetails = _fastapi.Depends(_services.get_brand_details)):
+    return brand_details
 
 @app.get("/api/products/my", response_model=_schemas.ProductsList)
-async def get_user_products(products: _schemas.ProductsList = _fastapi.Depends(_services.get_user_products)):
+async def user_products(products: _schemas.ProductsList = _fastapi.Depends(_services.get_user_products)):
     return products
 
-@app.get("/api/products/items{selected_product_id}", response_model=_schemas.ProductsItemsList)
-async def get_selected_product_items(selected_product_id: int, product_items: _schemas.ProductsItemsList = _fastapi.Depends(_services.get_selected_product_items)):
+@app.get("/api/products/{selected_product_id}/items", response_model=_schemas.ProductsItemsList)
+async def selected_product_items(selected_product_id: int, product_items: _schemas.ProductsItemsList = _fastapi.Depends(_services.get_selected_product_items)):
     if len(product_items)>1:
         return product_items
     else:
         raise _fastapi.HTTPException(status_code=_fastapi.status.HTTP_403_FORBIDDEN,
                             detail="Product item id not found for your license", headers={"X-No-Item": "Product item not found"})
+    
+@app.get("/api/products/items/{selected_item_id}/images", response_model=_schemas.ProductItemImagesList)
+async def selected_item_images(selected_item_id: int, item_images: _schemas.ProductItemImagesList = _fastapi.Depends(_services.get_item_images)):
+    return item_images
 
-@app.post("/api/products/orders{selected_product_id}/{selected_size_id}/{selected_colour_id}", response_model=_schemas.ProductOrder)
+@app.post("/api/orders/{selected_product_item_id}", response_model=_schemas.ProductOrder)
 async def order_product_item(selected_product_id: int, selected_size_id: int, selected_colour_id: int, selected_quantity: int, 
                              order: _schemas.ProductOrder = _fastapi.Depends(_services.make_item_order), user: _schemas.User = _fastapi.Depends(_services.get_current_user)):
     if 0 < order.order_quantity <= order.quantity_in_stock:
