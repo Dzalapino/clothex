@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ItemDefinition } from '../../services/models';
+import { ItemDefinition, ItemDefinition2 } from '../../services/models';
 import { BasketService } from '../../services/basket.service';
 
 @Component({
@@ -9,14 +9,13 @@ import { BasketService } from '../../services/basket.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemDetailsComponent {
-  @Input() itemDef?: ItemDefinition;
-  @Input() quantity?: number;
+  @Input() itemDef?: ItemDefinition2;
 
   constructor(private basketService: BasketService) {}
 
   addToBusket(): void {
     this.basketService.addItemToBasket({
-      productId: this.itemDef!.id,
+      productId: this.itemDef!.product_id,
       quantity: 1,
     });
   }

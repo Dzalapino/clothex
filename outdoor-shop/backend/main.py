@@ -73,9 +73,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-@app.get("/admin")
-async def read_protected_route(current_user: str = Depends(get_current_user)):
-    return {"message": f"Hello admin {current_user}"}
+# @app.get("/admin")
+# async def read_protected_route(current_user: str = Depends(get_current_user)):
+#     return {"message": f"Hello admin {current_user}"}
 
 async def get_access_token(username: str, password: str) -> str:
     url = "http://localhost:8000/api/token"
@@ -88,7 +88,7 @@ async def get_access_token(username: str, password: str) -> str:
             raise HTTPException(status_code=response.status_code, detail="Failed to get access token")
         
 async def fetch_item_list(access_token: str) -> dict:
-    url = "http://localhost:8000/api/myproducts"
+    url = "http://localhost:8000/api/products/my"
     headers = {"Authorization": f"Bearer {access_token}"}
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
@@ -98,7 +98,7 @@ async def fetch_item_list(access_token: str) -> dict:
             raise HTTPException(status_code=response.status_code, detail="Failed to fetch items")
 
 async def fetch_item_details(id: int, access_token: str):
-    url = "http://localhost:8000/api/selected_product_items/" + str(id)
+    url = "http://localhost:8000/api/products/" + str(id) + "/items"
     headers = {"Authorization": f"Bearer {access_token}"}
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers)
@@ -109,15 +109,19 @@ async def fetch_item_details(id: int, access_token: str):
 
 @app.get("/data")
 async def get_data():
-    access_token = await get_access_token('224407@edu.p.lodz.pl', 'Outdoor')
+    access_token = await get_access_token('230359@edu.p.lodz.pl', 'Outdoor')
     items = await fetch_item_list(access_token)
     list = []
-    for item_details in items:
-        item_details_list = await fetch_item_details(item_details['product_id'], access_token)
-        for xx in item_details_list:
-            list.append(xx)
+    for item in items:
+        details = await fetch_item_details(item['product_id'], access_token)
+        list.append(details)
     return list
 
+@app.get("/data/{id}")
+async def get_data_by_id(id: int):
+    access_token = await get_access_token('230359@edu.p.lodz.pl', 'Outdoor')
+    details = await fetch_item_details(id, access_token)
+    return details
 
 
 app.include_router(item_router)

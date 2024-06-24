@@ -5,7 +5,11 @@ import {
   OnInit,
 } from '@angular/core';
 import { ItemService } from '../../services/items.service';
-import { ItemDefinition, ItemStock } from '../../services/models';
+import {
+  ItemDefinition,
+  ItemDefinition2,
+  ItemStock,
+} from '../../services/models';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -17,6 +21,8 @@ import { ToastrService } from 'ngx-toastr';
 export class HomeComponent implements OnInit {
   itemDefs: ItemDefinition[] = [];
   itemStock: ItemStock[] = [];
+
+  itemDefinitions: Array<ItemDefinition2[]> = [];
 
   constructor(
     public itemService: ItemService,
@@ -31,6 +37,11 @@ export class HomeComponent implements OnInit {
     });
     this.itemService.getItemsStock().subscribe((stock) => {
       this.itemStock = stock;
+      this.cdr.markForCheck();
+    });
+
+    this.itemService.getData().subscribe((res) => {
+      this.itemDefinitions = res;
       this.cdr.markForCheck();
     });
   }

@@ -1,8 +1,12 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { BasketItem, ItemDefinition, ItemStock } from './models';
-import { BasketService } from './basket.service';
+import {
+  BasketItem,
+  ItemDefinition,
+  ItemDefinition2,
+  ItemStock,
+} from './models';
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +42,13 @@ export class ItemService {
 
   requestItems(item: BasketItem): Observable<string> {
     return of('success');
+  }
+
+  getData(): Observable<Array<ItemDefinition2[]>> {
+    return this.http.get<Array<ItemDefinition2[]>>(this.backendUrl + '/data');
+  }
+
+  getDataById(id: number): Observable<ItemDefinition2[]> {
+    return this.http.get<ItemDefinition2[]>(this.backendUrl + '/data/' + id);
   }
 }

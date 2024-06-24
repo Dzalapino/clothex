@@ -1,11 +1,11 @@
 @if(itemDef) {
 <div>
   <img
-    src="../../../assets/img/{{ itemDef.imgUrl }}"
-    [routerLink]="['/item', itemDef.id]"
+    src="../../../assets/img/buty.jpg"
+    [routerLink]="['/item', itemDef.product_id]"
   />
-  <p>Name: {{ itemDef.name }}</p>
-  <p>Color: {{ itemDef.color }}</p>
+  <p>Name: {{ itemDef.product_name }}</p>
+  <p>Color: {{ itemDef.colour_name }}</p>
 
   <button mat-raised-button (click)="addToBusket()">Add to basket</button>
 </div>
