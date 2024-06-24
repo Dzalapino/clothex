@@ -13,7 +13,7 @@ interface TokenResponse {
 })
 export class AuthService {
   private token: string | null = null;
-  private backendUrl = 'http://localhost:8000';
+  private backendUrl = 'http://localhost:8001';
 
   constructor(private http: HttpClient, private router: Router) {}
 

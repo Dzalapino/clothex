@@ -9,6 +9,7 @@ from repository.item_controller import init_item_stocks, item_router, init_item_
 from repository.db_connection import delete_db, engine
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import httpx
 
 origins = ['http://localhost:4200', 'http://localhost']
 
@@ -76,13 +77,54 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 async def read_protected_route(current_user: str = Depends(get_current_user)):
     return {"message": f"Hello admin {current_user}"}
 
+async def get_access_token(username: str, password: str) -> str:
+    url = "http://localhost:8000/api/token"
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, data={"username": username, "password": password})
+        if response.status_code == 200:
+            token_data = response.json()
+            return token_data["access_token"]
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Failed to get access token")
+        
+async def fetch_item_list(access_token: str) -> dict:
+    url = "http://localhost:8000/api/myproducts"
+    headers = {"Authorization": f"Bearer {access_token}"}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Failed to fetch items")
+
+async def fetch_item_details(id: int, access_token: str):
+    url = "http://localhost:8000/api/selected_product_items/" + str(id)
+    headers = {"Authorization": f"Bearer {access_token}"}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Failed to fetch item details")
+
+@app.get("/data")
+async def get_data():
+    access_token = await get_access_token('224407@edu.p.lodz.pl', 'Outdoor')
+    items = await fetch_item_list(access_token)
+    list = []
+    for item_details in items:
+        item_details_list = await fetch_item_details(item_details['product_id'], access_token)
+        for xx in item_details_list:
+            list.append(xx)
+    return list
+
+
 
 app.include_router(item_router)
-# app.include_router(order_router)
 
 if __name__ == "__main__":
     delete_db()
     init_item_defs()
     init_item_stocks()
     from uvicorn import run
-    run(app, host='0.0.0.0', port=8000)
+    run(app, host='0.0.0.0', port=8001)

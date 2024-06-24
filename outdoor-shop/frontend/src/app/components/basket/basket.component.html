@@ -1,15 +1,14 @@
-<h1>Your basket:</h1>
-@for(item of basketItems; track item) {
-<p>
-  {{ getItemDefById(item.productId)?.name }}: {{ item.quantity }}
-  <button (click)="deleteItem(item.productId)">-1</button>
-</p>
-}
+<h1><mat-icon>shopping_cart</mat-icon>Your basket:</h1>
+<div *ngIf="basketItems.length > 0; else noItems">
+  @for(item of basketItems; track item) {
+  <p>
+    {{ getItemDefById(item.productId)?.name }}: {{ item.quantity }}
+    <button (click)="deleteItem(item.productId)">-1</button>
+  </p>
+  }
 
-<button
-  *ngIf="basketItems.length > 0"
-  mat-raised-button
-  (click)="openConfirmDialog()"
->
-  Buy
-</button>
+  <button mat-raised-button class="buy-btn" (click)="openConfirmDialog()">
+    Buy
+  </button>
+</div>
+<ng-template #noItems>You have no items in tour basket.</ng-template>

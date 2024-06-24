@@ -26,3 +26,8 @@ vite.config.ts.timestamp-*
 
 
 # Packages
+
+
+outdoor-shop/frontend/node_modules
+headquarters/warehouse-authenticated-api/myenv
+headquarters/warehouse-authenticated-api/.env
