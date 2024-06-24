@@ -1,9 +1,14 @@
-import products_database as _products_database
+import products_database as _products_database, vendors_database as _vendors_database
 import models as _models
 import os
+import datetime as _datetime
+import passlib.hash as _hash
 
 def create_products_database():
     return _products_database.Base.metadata.create_all(bind=_products_database.engine)
+
+def create_vendors_database():
+    return _vendors_database.Base.metadata.create_all(bind=_vendors_database.engine)
 
 path = "./products_database.db"
 try:
@@ -13,7 +18,49 @@ except OSError as error:
     print(error)
     print("OLD DB NOT FOUND...")
 
+path = "./vendors_database.db"
+try:
+    os.remove(path)
+    print("NEW DB SET UP")
+except OSError as error:
+    print(error)
+    print("OLD DB NOT FOUND...")
+
 create_products_database()
+
+def insert_vendors():
+    from sqlalchemy import insert
+    session = _vendors_database.SessionLocal()
+    session.execute(
+        insert(_models.User),
+        [
+            {"shop_name": "Summer LTD", "email": "224407@edu.p.lodz.pl", "phone_number": "1234567", "address": "X Y Z", "hashed_password": '$2b$12$Nac0ocdVdH.3ifiWshhYq.eIDpm/QLin/B6B3VSFhlyTxI05Q9LqC', "grant_license": "S"},
+            {"shop_name": "Outdoor LTD", "email": "230359@edu.p.lodz.pl", "phone_number": "5234567", "address": "Z Y X", "hashed_password": '$2b$12$fI91gNRMr/Xuag3LxOwJH.8honUsQsT65KPyDaLnD7gntuvClJALW', "grant_license": "O"},
+            {"shop_name": "Everything LTD", "email": "253234@edu.p.lodz.pl", "phone_number": "1212121", "address": "Y Z X", "hashed_password": '$2b$12$2V/P0I44jpZWpp6qnBaBaeVku7f0EEr54mLn6Z34cpJfTCREJFpWa', "grant_license": "OS"},
+        ],
+    )
+    session.commit()
+
+def insert_orders():
+    from sqlalchemy import insert
+    session = _vendors_database.SessionLocal()
+    session.execute(
+        insert(_models.Order),
+        [
+            {"order_time": _datetime.datetime.now() + _datetime.timedelta(days=-2), "order_confirmed": False, "order_send": False, "order_tracking_number": int((_datetime.datetime.now() + _datetime.timedelta(days=-2)).strftime('%Y%m%d')), "user_id": 1
+            , "product_id": 1, "product_name" : "TS1", "product_item_id" : 1, "product_code" : "TS1_C1", "colour_id" : 1, "colour_name" : "Red", "size_option_id" : 1, "size_option_name" : "M", "order_quantity": 20},
+            {"order_time": _datetime.datetime.now() + _datetime.timedelta(days=-1), "order_confirmed": False, "order_send": False, "order_tracking_number": int((_datetime.datetime.now() + _datetime.timedelta(days=-1)).strftime('%Y%m%d')), "user_id": 1
+            , "product_id": 4, "product_name" : "S1", "product_item_id" : 5, "product_code" : "S1_C1", "colour_id" : 4, "colour_name" : "Another", "size_option_id" : 3, "size_option_name" : "XL", "order_quantity": 50},
+            {"order_time": _datetime.datetime.now() + _datetime.timedelta(days=-0), "order_confirmed": False, "order_send": False, "order_tracking_number": int((_datetime.datetime.now() + _datetime.timedelta(days=-0)).strftime('%Y%m%d')), "user_id": 2
+            , "product_id": 8, "product_name" : "SH2", "product_item_id" : 10, "product_code" : "SH2_C2", "colour_id" : 4, "colour_name" : "Another", "size_option_id" : 8, "size_option_name" : "43", "order_quantity": 30},
+        ],
+    )
+    session.commit()
+
+
+create_vendors_database()
+insert_vendors()
+insert_orders()
 
 def insert_colors():
     from sqlalchemy import insert

@@ -3,13 +3,17 @@ It is recommended to set up python virtual environment with following command:
 
 python -m venv myvenv
 
+then activate with:
+
+.\myenv\Scripts\activate
+
 then install required packages with command:
 
-pip install - r requirements.txt
+pip install - r .\requirements.txt
 
 
 OPTIONAL:
-If you want to set up sample database (e.g. you do not have it or you accidentialy caused it to corrupt)to work with
+If you want to set up sample products and vendors databases (e.g. you do not have it or you accidentialy caused it to corrupt)to work with
 you can use dedicated script with command:
 
 python -m database_setup
@@ -41,3 +45,6 @@ passwords are:
 Summer 
 or 
 Outdoor
+
+
+for mailing you need mailing.env file which cannot be shared here :D

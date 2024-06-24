@@ -9,19 +9,40 @@ import vendors_database as _vendors_database
 import products_database as _products_database
 
 class User(_vendors_database.Base):
-    __tablename__ = "users"
-    id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    __tablename__ = "users_table"
+    user_id = _sql.Column(_sql.Integer, primary_key=True, index=True)
     shop_name = _sql.Column(_sql.String, unique=True)
     email = _sql.Column(_sql.String, unique=True, index=True)
     phone_number = _sql.Column(_sql.String)
     address = _sql.Column(_sql.String)
     hashed_password = _sql.Column(_sql.String)
     grant_license = _sql.Column(_sql.String)
+
+    order: _orm.Mapped[List["Order"]] = _orm.relationship(back_populates="user")
  
     def verify_password(self, password: str):
         return _hash.bcrypt.verify(password, self.hashed_password)
 
+class Order(_vendors_database.Base):
+    __tablename__ = "orders_table"
+    order_id = _sql.Column(_sql.Integer, primary_key=True, index=True)
+    order_time = _sql.Column(_sql.DateTime)
+    order_confirmed = _sql.Column(_sql.Boolean)
+    order_send = _sql.Column(_sql.Boolean)
+    order_tracking_number = _sql.Column(_sql.BigInteger, unique=True)
 
+    user_id: _orm.Mapped[int] = _orm.mapped_column(_sql.ForeignKey("users_table.user_id"))
+    user: _orm.Mapped["User"] = _orm.relationship(back_populates="order")
+
+    product_id = _sql.Column(_sql.Integer)
+    product_name = _sql.Column(_sql.String)
+    product_item_id = _sql.Column(_sql.Integer)
+    product_code = _sql.Column(_sql.String)
+    colour_id = _sql.Column(_sql.Integer)
+    colour_name = _sql.Column(_sql.String)
+    size_option_id = _sql.Column(_sql.Integer)
+    size_option_name = _sql.Column(_sql.String)
+    order_quantity = _sql.Column(_sql.Integer)
 
 class Product_Category(_products_database.Base):
     __tablename__ = "product_category_table"
