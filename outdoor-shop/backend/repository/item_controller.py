@@ -161,6 +161,9 @@ async def createOrder(id: int, variant_id: int, quantity: int):
     
 @item_router.post('/request-items')
 async def makeNeedRequest(dto: ItemStockDto):
+    cache = await use_cache()
+    if cache:
+        raise HTTPException(status_code=500, detail="HQ not available")
     product_id = 1
     for items in item_list:
         for x in items:
