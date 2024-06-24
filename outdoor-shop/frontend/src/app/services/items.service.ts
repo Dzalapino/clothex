@@ -8,7 +8,7 @@ import { BasketService } from './basket.service';
   providedIn: 'root',
 })
 export class ItemService {
-  private backendUrl = 'http://localhost:8000';
+  private backendUrl = 'http://localhost:8001';
 
   constructor(private http: HttpClient) {}
 

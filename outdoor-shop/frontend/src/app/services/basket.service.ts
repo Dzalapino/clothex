@@ -6,7 +6,7 @@ import { BasketItem } from './models';
   providedIn: 'root',
 })
 export class BasketService {
-  private backendUrl = 'http://localhost:8000';
+  private backendUrl = 'http://localhost:8001';
   private cacheKey = 'basketItems';
   private _basketItems: BasketItem[] | null = null;
 
