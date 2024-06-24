@@ -1,10 +1,3 @@
-export interface ItemDefinition {
-  id: number;
-  name: string;
-  color: string;
-  imgUrl: string;
-}
-
 export interface ItemStock {
   id: number;
   productId: number;
@@ -24,5 +17,12 @@ export interface ItemDefinition2 {
   retail_price: number;
   colour_name: string;
   size_option_name: string;
-  variation_id: string;
+  variation_id: number;
+  image_url?: string;
+}
+
+export interface ImageDto {
+  image_id: number;
+  product_item_id: number;
+  image_url: string;
 }

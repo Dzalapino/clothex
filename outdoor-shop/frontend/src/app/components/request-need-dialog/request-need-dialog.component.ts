@@ -20,6 +20,8 @@ export class RequestNeedDialogComponent {
   ) {}
 
   makeRequest(): void {
+    console.log(this.data.id, this.quantity.getRawValue());
+
     this.itemService
       .requestItems({
         productId: this.data.id,

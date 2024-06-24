@@ -1,4 +1,4 @@
-<div *ngIf="item; else noItem" class="container">
+<div *ngIf="items; else noItem" class="container">
   <div class="nav">
     <h1 class="nav-title">Clothex Outdoor</h1>
     <button mat-raised-button class="nav-login" routerLink="login">
@@ -6,11 +6,51 @@
     </button>
   </div>
   <div class="main">
-    <h1>{{ item.name }}</h1>
-    <img src="../../../assets/img/{{ item.imgUrl }}" />
-    <p>Color: {{ item.color }}</p>
+    <h1>{{ items[0].product_name }}</h1>
 
-    <button mat-raised-button (click)="addToBusket()">Add to basket</button>
+    <div class="images-container">
+      @for(img of images; track img) {
+      <img [src]="img.image_url" />
+      }
+    </div>
+
+    <h1>Price: {{ items[0].retail_price }}zł</h1>
+
+    <p>Available sizes:</p>
+    <div class="sizes">
+      @for(size of getSizes(); track size) {
+      <div
+        class="size-btn"
+        [class.selected]="selectedSize == size"
+        (click)="selectSize(size)"
+      >
+        {{ size }}
+      </div>
+      }
+    </div>
+
+    <p>Available colors:</p>
+    <div class="sizes" *ngIf="selectedSize; else noSize">
+      @for(color of getColors(); track color) {
+      <div
+        class="size-btn"
+        [class.selected]="selectedColor == color"
+        (click)="selectColor(color)"
+      >
+        {{ color }}
+      </div>
+      }
+    </div>
+    <ng-template #noSize>To select color, select the size first</ng-template>
+
+    <button
+      *ngIf="selectedColor && selectedSize"
+      mat-raised-button
+      (click)="addToBusket()"
+      style="margin-top: 24px"
+    >
+      Add to basket
+    </button>
   </div>
   <div class="basket">
     <app-basket></app-basket>

@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ItemService } from '../../services/items.service';
-import { ItemDefinition, ItemStock } from '../../services/models';
+import { ItemDefinition2, ItemStock } from '../../services/models';
 import { MatDialog } from '@angular/material/dialog';
 import { RequestNeedDialogComponent } from '../request-need-dialog/request-need-dialog.component';
 
@@ -13,13 +13,15 @@ import { RequestNeedDialogComponent } from '../request-need-dialog/request-need-
   styleUrl: './admin.component.scss',
 })
 export class AdminComponent implements OnInit {
-  itemDefs: ItemDefinition[] = [];
+  itemDefs: ItemDefinition2[] = [];
   itemStock: ItemStock[] = [];
 
   displayedColumns: string[] = [
     'id',
     'productId',
     'productName',
+    'color',
+    'size',
     'quantity',
     'actions',
   ];
@@ -34,8 +36,8 @@ export class AdminComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.itemService.getItemDefinitions().subscribe((defs) => {
-      this.itemDefs = defs;
+    this.itemService.getData().subscribe((defs) => {
+      this.itemDefs = defs.flat();
     });
 
     this.itemService.getItemsStock().subscribe((stock) => {
@@ -43,13 +45,15 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  getItemDefById(id: number): ItemDefinition | undefined {
-    return this.itemDefs.filter((item) => item.id === id).at(0);
+  getItemStockById(variation_id: number): ItemStock | undefined {
+    return this.itemStock
+      .filter((item) => item.productId == variation_id)
+      .at(0);
   }
 
-  openDialog(name: string): void {
+  openDialog(name: string, id: number): void {
     const ref = this.dialog.open(RequestNeedDialogComponent, {
-      data: { name },
+      data: { name, id },
     });
   }
 
