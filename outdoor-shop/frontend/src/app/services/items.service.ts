@@ -31,12 +31,12 @@ export class ItemService {
     });
   }
 
-  requestItems(item: BasketItem): Observable<string> {
+  requestItems(item: BasketItem): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
 
-    return this.http.post<string>(
+    return this.http.post<any>(
       this.backendUrl + '/request-items',
       {
         productId: item.productId,

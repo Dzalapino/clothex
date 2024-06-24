@@ -145,19 +145,15 @@ def get_item_stock():
         items = session.exec(select(ItemStock)).all()
         return items
     
-async def createOrder(id: int):
+async def createOrder(id: int, variant_id: int, quantity: int):
     access_token = await get_access_token('230359@edu.p.lodz.pl', 'Outdoor')
-    url = "http://localhost:8000/api/orders/" + str(1)
+    url = f'http://localhost:8000/api/orders/{id}/{variant_id}/{quantity}'
     headers = {"Authorization": f"Bearer {access_token}"}
 
+    print(url)
+
     async with httpx.AsyncClient() as client:
-        response = await client.post(url,
-        json = {
-            "selected_size_id": 1,
-            "selected_colour_id": 1,
-            "selected_quantity": 1
-        },
-        headers=headers)
+        response = await client.post(url, headers=headers)
         if response.status_code == 200:
             return response.json()
         else:
@@ -165,5 +161,10 @@ async def createOrder(id: int):
     
 @item_router.post('/request-items')
 async def makeNeedRequest(dto: ItemStockDto):
-    order = await createOrder(dto.productId)
-    return 'asd'
+    product_id = 1
+    for items in item_list:
+        for x in items:
+            if x['variation_id'] == dto.productId:
+                product_id = x['product_id']
+    order = await createOrder(product_id, dto.productId, dto.quantity)
+    return order
