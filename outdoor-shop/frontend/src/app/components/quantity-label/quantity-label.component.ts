@@ -20,10 +20,10 @@ export class QuantityLabelComponent implements OnInit {
       this.color = 'red';
       this.label = 'Brak';
     } else if (this.quantity < 5) {
-      this.color = 'orange';
+      this.color = 'brown';
       this.label = 'Ostatnie sztuki';
     } else if (this.quantity < 15) {
-      this.color = 'yellow';
+      this.color = 'orange';
       this.label = 'Mała ilość';
     } else {
       this.color = 'green';

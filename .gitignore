@@ -31,3 +31,4 @@ vite.config.ts.timestamp-*
 outdoor-shop/frontend/node_modules
 headquarters/warehouse-authenticated-api/myenv
 headquarters/warehouse-authenticated-api/.env
+outdoor/backend/test.db
