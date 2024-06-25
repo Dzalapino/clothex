@@ -27,9 +27,14 @@ export class RequestNeedDialogComponent {
         productId: this.data.id,
         quantity: this.quantity.getRawValue() ?? 1,
       })
-      .subscribe((response) => {
-        this.toastrService.success('Request sent successfully.');
-        this.dialogRef.close();
-      });
+      .subscribe(
+        (response) => {
+          this.toastrService.success('Request sent successfully.');
+          this.dialogRef.close();
+        },
+        (error) => {
+          this.toastrService.error(error.error.detail);
+        }
+      );
   }
 }
