@@ -31,9 +31,13 @@ export class BasketConfirmDialogComponent {
   }
 
   buyItems(): void {
-    for (let item of this.data.basketItems) {
+    for (const [index, item] of this.data.basketItems.entries()) {
       this.itemService.buyItems(item).subscribe(
         (response) => {
+          if (index == this.data.basketItems.length - 1) {
+            this.toastrService.success('Products bought successfully!');
+            this.dialogRef.close();
+          }
           this.basketService.removeItemFromBasket(
             item.productId,
             item.quantity
@@ -44,6 +48,5 @@ export class BasketConfirmDialogComponent {
         }
       );
     }
-    this.dialogRef.close();
   }
 }

@@ -6,7 +6,9 @@
     </button>
   </div>
   <div class="main">
-    <h1>{{ items[0].product_name }}</h1>
+    <h1 style="margin-top: 24px; font-size: 36px">
+      Product name: {{ items[0].product_name }}
+    </h1>
 
     <div class="images-container">
       @for(img of images; track img) {
@@ -14,7 +16,7 @@
       }
     </div>
 
-    <h1>Price: {{ items[0].retail_price }}zł</h1>
+    <h1><mat-icon>money</mat-icon>Price: {{ items[0].retail_price }}zł</h1>
 
     <p>Available sizes:</p>
     <div class="sizes">
@@ -49,7 +51,7 @@
       (click)="addToBusket()"
       style="margin-top: 24px"
     >
-      Add to basket
+      Add to basket<mat-icon>shopping_cart</mat-icon>
     </button>
   </div>
   <div class="basket">

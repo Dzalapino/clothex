@@ -29,7 +29,11 @@ export class RequestNeedDialogComponent {
       })
       .subscribe(
         (response) => {
-          this.toastrService.success('Request sent successfully.');
+          console.log(response);
+          let order_id = response.order_tracking_number;
+          this.toastrService.success(
+            'Request sent successfully. Order tracking number: ' + order_id
+          );
           this.dialogRef.close();
         },
         (error) => {
